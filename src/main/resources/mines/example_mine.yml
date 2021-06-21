@@ -1,0 +1,39 @@
+# This MUST be unique to all mines, it is used in the database to reference which mine type is set,
+# as well as which type of mine is placed where by the schematic pool. Accepted ranges: 0-128
+id: 0
+
+# Path to schematic FROM the root data directory of the plugin (where config.yml is)
+schematic_path: "mines/example_mine.schematic"
+
+# data shown to players, can change whenever but might require a plugin restart to take effect
+name: Example Mine
+description:
+  - This is the description for the mine
+  - it is pretty epic
+
+# The icon used in menus, needs to be a spigot Material enum,
+# https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+icon: GRASS
+
+# ~~~ Offsets ~~~
+# Offsets are positions that are relative to the origin of the schematic
+# The origin of the schematic is typically where you are when the schematic is pasted with WorldEdit,
+#
+# So if you want the player to spawn 3 blocks in the positive x direction from where you are when the schematic is placed,
+# the spawn offset will be 3,0,0
+spawn_offset: 0,0,0
+
+# The mine region points are two points that define the cuboid zone where blocks are placed,
+# It can be any 2 diagonal (on both planes) corners on the cuboid
+# But it's probably best to keep one with the minimum and one with the maximum
+mine_region_a_offset: -30,0,-30
+mine_region_b_offset: 30,0,30
+
+# The bounding region is the region where the player is allowed to be,
+# By default, those with permission node vyprison.bypass.bounds can bypass the restriction,
+# but others are tp'd back to the spawn if they leave the area
+#
+# Just to make sure, consider surrounding your mine with barrier blocks
+# and use this only as a backup plan
+bounding_region_a_offset: -128,255,128
+bounding_region_b_offset: 128,-255,128

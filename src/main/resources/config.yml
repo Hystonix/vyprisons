@@ -1,0 +1,27 @@
+db:
+  source_class_name: com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+  server_name: 127.0.0.1
+  server_port: 3306
+
+  database_name: prison
+  username: root
+  password: password
+
+minepool:
+  world_name: world
+  origin: 0,30,0
+
+  min_instances: 4
+  min_available_instances: 2
+  max_instances: 32
+
+  worker:
+    max_instances: 2
+
+    # Every tick, the worker places a number of blocks
+    # This is how many blocks each worker places in a tick
+    blocks_per_tick: 16
+
+    # Under certain circumstances, the server can operate under burst blocks per tick,
+    # where it is critical that a mine gets placed quickly
+    burst_blocks_per_tick: 1248
