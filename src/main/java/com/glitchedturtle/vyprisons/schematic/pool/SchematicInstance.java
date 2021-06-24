@@ -1,5 +1,6 @@
 package com.glitchedturtle.vyprisons.schematic.pool;
 
+import com.glitchedturtle.common.region.Region;
 import com.glitchedturtle.common.util.SafeLocation;
 import com.glitchedturtle.common.util.TAssert;
 import com.glitchedturtle.vyprisons.configuration.Conf;
@@ -11,7 +12,6 @@ import com.glitchedturtle.vyprisons.util.DebugFlag;
 import com.glitchedturtle.vyprisons.util.GridCalculator;
 import org.bukkit.Location;
 import org.bukkit.World;
-import sun.security.ssl.Debug;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.CompletableFuture;
@@ -76,7 +76,7 @@ public class SchematicInstance {
         mid.add(Conf.MINE_ORIGIN.toVector());
         SafeLocation midPoint = new SafeLocation(mid);
 
-        boolean burst = SchematicInstance.workerBurstMode();
+        boolean burst = SchematicInstance.isBurstMode();
         int blocksPerTick = burst ? Conf.MINE_WORKER_BURST_BLOCKS_PER_TICK : Conf.MINE_WORKER_BLOCKS_PER_TICK;
 
         _placeJob = new SchematicWorker.PlaceJob(midPoint, _type, blocksPerTick, completableFuture);
@@ -141,11 +141,19 @@ public class SchematicInstance {
         _reservedBy = new WeakReference<>(reserveFor);
     }
 
-    void relinquish() {
+    void relinquishInternal() {
         _reservedBy = null;
     }
 
-    private static boolean workerBurstMode() {
+    public void relinquish() {
+        _pool.relinquishInstance(this);
+    }
+
+    public Region getMineRegion() {
+        return _type.getMineOffset().addOffset(Conf.MINE_WORLD.getWorld(), _origin);
+    }
+
+    private static boolean isBurstMode() {
 
         if(DebugFlag.WORKER_BURST_MODE)
             return true;

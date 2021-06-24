@@ -1,3 +1,4 @@
 vyprison.command.admin
 vyprison.command.teleport
 vyprison.command.create
+vyprison.command.manage

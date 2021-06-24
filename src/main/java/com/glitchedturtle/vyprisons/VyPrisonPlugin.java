@@ -58,7 +58,8 @@ public class VyPrisonPlugin extends JavaPlugin {
         _schematicManager.initialize();
 
         _playerManager = new VyPlayerManager(this);
-        
+        _playerManager.initialize();
+
         this.getCommand("vyprison")
                 .setExecutor(new VyPrisonCommand(this));
 

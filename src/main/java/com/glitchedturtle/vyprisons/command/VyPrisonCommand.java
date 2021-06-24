@@ -7,6 +7,7 @@ import com.glitchedturtle.vyprisons.command.abs.VySubPlayerCommand;
 import com.glitchedturtle.vyprisons.command.impl.amanage.VyAdminManageCommand;
 import com.glitchedturtle.vyprisons.command.impl.mine.VyCreateCommand;
 import com.glitchedturtle.vyprisons.command.impl.mine.VyTeleportCommand;
+import com.glitchedturtle.vyprisons.command.impl.mine.manage.VyManageCommand;
 import com.glitchedturtle.vyprisons.configuration.Conf;
 import com.glitchedturtle.vyprisons.player.VyPlayer;
 import com.glitchedturtle.vyprisons.player.VyPlayerManager;
@@ -32,6 +33,7 @@ public class VyPrisonCommand implements CommandExecutor {
 
         this.registerCommand(new VyTeleportCommand(_playerManager));
         this.registerCommand(new VyCreateCommand(pluginInstance.getSchematicManager()));
+        this.registerCommand(new VyManageCommand(pluginInstance.getMenuManager()));
 
     }
 

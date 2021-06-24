@@ -55,24 +55,7 @@ public class VyTeleportCommand extends VySubPlayerCommand {
 
             }
 
-            SchematicInstance instance = mine.getSchematicInstance();
-            if(instance.getState() != SchematicInstance.InstanceState.READY) {
-
-                if(!mine.attemptReassign()) {
-
-                    ply.sendMessage(Conf.CMD_TELEPORT_PLACE_IN_PROGRESS);
-                    return;
-
-                } else {
-                    instance = mine.getSchematicInstance();
-                }
-
-            }
-
-            Location warpPos = instance.getWarpPosition();
-            ply.teleport(warpPos);
-
-            ply.playSound(ply.getEyeLocation(), Conf.CMD_TELEPORT_SOUND, 1, 1);
+            vyPlayer.warpToMine(mine);
             ply.sendMessage(Conf.CMD_TELEPORT_SUCCESS);
 
         });

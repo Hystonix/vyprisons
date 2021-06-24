@@ -90,4 +90,9 @@ public class SchematicType {
     public Vector getSpawnOffset() {
         return _spawnOffset;
     }
+
+    public Region getMineOffset() {
+        return _mineOffset;
+    }
+
 }

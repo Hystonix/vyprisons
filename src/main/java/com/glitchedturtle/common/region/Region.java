@@ -1,5 +1,6 @@
 package com.glitchedturtle.common.region;
 
+import com.glitchedturtle.common.util.SafeLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -62,6 +63,38 @@ public class Region {
 
     public Vector getDimensions() {
         return _max.clone().subtract(_min);
+    }
+
+    public Region addOffset(World world, SafeLocation origin) {
+
+        Location loc = origin.toLocation(world);
+
+        return new Region(
+                loc.clone().add(_min),
+                loc.clone().add(_max)
+        );
+
+    }
+
+    public boolean isWithin(Location loc) {
+
+        if(!loc.getWorld().getName().equals(_worldName))
+            return false;
+
+        if(_min.getX() > loc.getX() || _min.getY() > loc.getY() || _min.getZ() > loc.getZ())
+            return false;
+        if(_max.getX() < loc.getX() || _max.getY() < loc.getY() || _max.getZ() < loc.getZ())
+            return false;
+
+        return true;
+
+    }
+
+    public int getVolume() {
+
+        Vector dim = this.getDimensions();
+        return (dim.getBlockX() + 1) * (dim.getBlockY() + 1) * (dim.getBlockZ() + 1);
+
     }
 
 }

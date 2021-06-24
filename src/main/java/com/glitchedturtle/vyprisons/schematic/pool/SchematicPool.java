@@ -163,7 +163,7 @@ public class SchematicPool {
 
         TAssert.assertTrue(_reservedInstances.remove(instance),
                 "Instance not entry of reserved instances collection");
-        instance.relinquish();
+        instance.relinquishInternal();
 
         _availableInstances.add(instance);
         this.validateAvailable();

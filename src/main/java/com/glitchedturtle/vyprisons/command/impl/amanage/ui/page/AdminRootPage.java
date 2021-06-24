@@ -27,13 +27,21 @@ public class AdminRootPage extends AbstractMenuPage<AdminManageMenu> {
                     ChatColor.GRAY + "Manage player data, including their personal mine"
                 ).build()
         );
-        inv.setItem(11, ItemBuilder.create(Material.FILLED_MAP)
+        inv.setItem(11, ItemBuilder.create(Material.IRON_BARS)
+                .displayName(ChatColor.BLUE.toString() + ChatColor.BOLD + "Manage Active Mines")
+                .lore(
+                    "",
+                    ChatColor.GRAY + "View and manage all active mines"
+                ).build()
+        );
+        inv.setItem(12, ItemBuilder.create(Material.FILLED_MAP)
                 .displayName(ChatColor.RED.toString() + ChatColor.BOLD + "Manage Schematic Instances")
                 .lore(
                     "",
                     ChatColor.GRAY + "Manage schematic instances"
                 ).build()
         );
+
     }
 
     @Override
@@ -56,6 +64,9 @@ public class AdminRootPage extends AbstractMenuPage<AdminManageMenu> {
 
         switch(stack.getType()) {
             case PLAYER_HEAD:
+                break;
+            case IRON_BARS:
+                menu.openPage(new AdminMinePage(menu));
                 break;
             case FILLED_MAP:
                 menu.openPage(new AdminSchematicPage(menu));

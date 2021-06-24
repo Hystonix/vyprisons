@@ -150,7 +150,6 @@ public class AdminSchematicPage extends AbstractMenuPage<AdminManageMenu> {
             return;
 
         AdminManageMenu menu = this.getMenu();
-
         Player ply = menu.getPlayer();
 
         if(stack.getType() == Material.BLUE_BED) {

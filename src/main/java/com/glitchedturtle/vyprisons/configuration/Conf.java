@@ -49,6 +49,47 @@ public class Conf {
     @ConfKey("minepool.worker.burst_blocks_per_tick")
     public static int MINE_WORKER_BURST_BLOCKS_PER_TICK = 1248;
 
+    @ConfKey("mine.default_tp_world_name")
+    public static SafeWorld DEFAULT_TP_WORLD = new SafeWorld("world");
+    @ConfKey("mine.default_tp_position")
+    public static SafeLocation DEFAULT_TP_POSITION = new SafeLocation(0, 30, 0);
+
+    public static String INVALID_POSITION_MSG
+            = ChatColor.RED + "Oops... You aren't supposed to be here!";
+    public static Sound INVALID_POSITION_SOUND
+            = Sound.BLOCK_BEACON_ACTIVATE;
+
+    public static String INVALID_BLOCK_MODIFY_MSG
+            = ChatColor.RED + "You can't place or break this block!";
+    public static boolean INVALID_BLOCK_MODIFY_MSG_SEND_TO_CHAT = true;
+    public static boolean INVALID_BLOCK_MODIFY_MSG_SEND_TO_ACTION = true;
+    public static Sound INVALID_BLOCK_MODIFY_SOUND
+            = Sound.ENTITY_ITEM_BREAK;
+
+    public static String MINE_RESET_MSG
+            = ChatColor.GOLD + "The mine is resetting";
+
+    public static long MINE_RESET_DELAY
+            = 10;
+    public static String MINE_RESET_WARN_MSG
+            = ChatColor.YELLOW + "The mine will reset in 10 seconds";
+
+    public static double MINE_RESET_THRESHOLD = 0.99;
+
+    @ConfKey("mine.reset.blocks_per_tick")
+    public static int MINE_RESET_BLOCKS_PER_TICK = 1248;
+    @ConfKey("mine.reset.max_workers")
+    public static int MINE_RESET_MAX_WORKERS = 2;
+
+    public static String MINE_ACCESS_LEVEL_UPDATED_PUBLIC
+            = ChatColor.GOLD + "The mine's access level has set to public";
+    public static String MINE_ACCESS_LEVEL_UPDATED_GANG
+            = ChatColor.GOLD + "The mine's access level has set to gang-only";
+    public static String MINE_ACCESS_LEVEL_UPDATED_PRIVATE
+            = ChatColor.GOLD + "The mine's access level has set to private";
+    public static String MINE_ACCESS_LEVEL_UPDATED_DISPLACED
+            = ChatColor.RED + "Hence, you have been evicted from the mine";
+
     public static String CMD_MISSING_PERMISSION
             = ChatColor.RED + "You lack the required permissions to execute this command";
     public static String CMD_FAILED_PROFILE_FETCH
@@ -80,5 +121,9 @@ public class Conf {
     public static Sound CMD_CREATE_SUCCESS_SOUND
             = Sound.ENTITY_PLAYER_LEVELUP;
 
+    public static String CMD_MANAGE_NOT_MINE
+            = ChatColor.RED + "You do not have a mine to manage! To create a mine, type /vyprison create";
+    public static String CMD_MANAGE_MINE_FETCH_FAILED
+            = ChatColor.RED + "An error occured while loading your mine, please try again later";
 
 }

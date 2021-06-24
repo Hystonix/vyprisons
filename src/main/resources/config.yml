@@ -25,3 +25,22 @@ minepool:
     # Under certain circumstances, the server can operate under burst blocks per tick,
     # where it is critical that a mine gets placed quickly
     burst_blocks_per_tick: 1248
+
+mine:
+  default_tp_world_name: world
+  default_tp_position: 0,30,0
+
+  reset:
+    blocks_per_tick: 1024
+    max_workers: 2
+
+tiers:
+  1:
+    - type: STONE
+      probability: 100
+    - type: DIAMOND_ORE
+      probability: 10
+    - type: EMERALD_ORE
+      probability: 1
+    - type: DIAMOND_BLOCK
+      probability: 1

@@ -4,7 +4,7 @@ import java.text.DecimalFormat;
 
 public class TFormatter {
 
-    private static DecimalFormat DECIMAL_FORMATTER = new DecimalFormat("#.#");
+    private static DecimalFormat DECIMAL_FORMATTER = new DecimalFormat("#0.0");
     private static DecimalFormat LARGE_FORMAT = new DecimalFormat("###,###,###,###");
 
     public static String formatPercentage(double percentage) {

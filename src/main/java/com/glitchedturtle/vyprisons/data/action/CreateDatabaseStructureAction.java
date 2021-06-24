@@ -23,6 +23,7 @@ public class CreateDatabaseStructureAction implements IDatabaseAction<Void> {
                 "CREATE TABLE IF NOT EXISTS `vy_player_mine` ("
                         + "`owner_uuid` VARCHAR(36) NOT NULL,"
                         + "`active_schematic` TINYINT(8),"
+                        + "`tier` TINYINT(8) DEFAULT 1,"
                     + "PRIMARY KEY(`owner_uuid`))"
         ).execute();
 

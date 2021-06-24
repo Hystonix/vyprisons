@@ -1,10 +1,19 @@
 package com.glitchedturtle.vyprisons.player.mine;
 
+import com.glitchedturtle.vyprisons.PluginStartException;
+import com.glitchedturtle.vyprisons.VyPrisonPlugin;
 import com.glitchedturtle.vyprisons.data.DatabaseConnector;
+import com.glitchedturtle.vyprisons.player.VyPlayer;
+import com.glitchedturtle.vyprisons.player.VyPlayerManager;
 import com.glitchedturtle.vyprisons.player.mine.action.CreateMineInstanceAction;
 import com.glitchedturtle.vyprisons.player.mine.action.FetchMineInstanceAction;
+import com.glitchedturtle.vyprisons.player.mine.listener.MineManipulationHandler;
+import com.glitchedturtle.vyprisons.player.mine.listener.PlayerPositionHandler;
+import com.glitchedturtle.vyprisons.player.mine.reset.MineResetManager;
 import com.glitchedturtle.vyprisons.schematic.SchematicManager;
 import com.glitchedturtle.vyprisons.schematic.SchematicType;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -14,9 +23,33 @@ public class PlayerMineManager {
     private DatabaseConnector _databaseConnector;
     private SchematicManager _schematicManager;
 
-    public PlayerMineManager(DatabaseConnector databaseConnector, SchematicManager schematicManager) {
-        _databaseConnector = databaseConnector;
-        _schematicManager = schematicManager;
+    private MineResetManager _resetManager;
+    private MineCompositionManager _compositionManager;
+
+    private MineManipulationHandler _mineManipulationHandler;
+    private PlayerPositionHandler _minePositionHandler;
+
+    public PlayerMineManager(VyPrisonPlugin plugin, VyPlayerManager playerManager) {
+
+        _databaseConnector = plugin.getDatabaseConnector();
+        _schematicManager = plugin.getSchematicManager();
+
+        _resetManager = new MineResetManager(plugin);
+
+        _compositionManager = new MineCompositionManager();
+
+        _mineManipulationHandler = new MineManipulationHandler(playerManager);
+        _minePositionHandler = new PlayerPositionHandler(playerManager);
+
+        Bukkit.getPluginManager()
+                .registerEvents(_mineManipulationHandler, plugin);
+        Bukkit.getPluginManager()
+                .registerEvents(_minePositionHandler, plugin);
+
+    }
+
+    public void initialize(ConfigurationSection section) throws PluginStartException {
+        _compositionManager.loadConfiguration(section);
     }
 
     public CompletableFuture<PlayerMineInstance> loadMine(UUID uuid) {
@@ -34,7 +67,9 @@ public class PlayerMineManager {
                 type = _schematicManager.getDefaultType();
 
             PlayerMineInstance instance = new PlayerMineInstance(this, uuid);
-            instance.setActiveSchematic(type);
+
+            instance.setSchematic(type);
+            instance.assignSchematicInstance();
 
             return instance;
 
@@ -53,7 +88,9 @@ public class PlayerMineManager {
                 return null;
 
             PlayerMineInstance instance = new PlayerMineInstance(this, uuid);
-            instance.setActiveSchematic(type);
+
+            instance.setSchematic(type);
+            instance.assignSchematicInstance();
 
             return instance;
 
@@ -63,6 +100,15 @@ public class PlayerMineManager {
 
     SchematicManager getSchematicManager() {
         return _schematicManager;
+    }
+    MineResetManager getResetManager() { return _resetManager; }
+
+    MineCompositionManager getCompositionManager() {
+        return _compositionManager;
+    }
+
+    DatabaseConnector getDatabaseConnector() {
+        return _databaseConnector;
     }
 
 }

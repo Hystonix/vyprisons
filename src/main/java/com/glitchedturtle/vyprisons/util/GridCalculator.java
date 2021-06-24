@@ -6,12 +6,16 @@ public class GridCalculator {
 
     private int _moduleSize;
     private int _sizeSq;
+
+    private double _rtLogCoef;
     private double _logCoef;
 
     public GridCalculator(int moduleSize) {
 
         _moduleSize = moduleSize;
         _sizeSq = (int) Math.pow(_moduleSize, 2);
+
+        _rtLogCoef = Math.log(_moduleSize);
         _logCoef = Math.log(_sizeSq);
 
     }
