@@ -53,7 +53,6 @@ public class AdminMinePage extends AbstractMenuPage<AdminManageMenu> {
                 .getPlayerManager();
 
         int slot = 10;
-
         for(VyPlayer vyPlayer : playerManager.getCachedPlayers()) {
 
             PlayerMineInstance instance = vyPlayer.getCachedMine();

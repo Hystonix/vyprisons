@@ -60,8 +60,11 @@ public class VyPrisonPlugin extends JavaPlugin {
         _playerManager = new VyPlayerManager(this);
         _playerManager.initialize();
 
+        VyPrisonCommand commandHandle = new VyPrisonCommand(this);
         this.getCommand("vyprison")
-                .setExecutor(new VyPrisonCommand(this));
+                .setExecutor(commandHandle);
+        this.getCommand("vyprison")
+                .setTabCompleter(commandHandle);
 
     }
 

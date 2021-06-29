@@ -89,6 +89,8 @@ public class Conf {
             = ChatColor.GOLD + "The mine's access level has set to private";
     public static String MINE_ACCESS_LEVEL_UPDATED_DISPLACED
             = ChatColor.RED + "Hence, you have been evicted from the mine";
+    public static String MINE_TIER_UPGRADE
+            = ChatColor.GRAY + "The mine has leveled up to " + ChatColor.AQUA.toString() + ChatColor.BOLD.toString() + "TIER %tier%!!";
 
     public static String CMD_MISSING_PERMISSION
             = ChatColor.RED + "You lack the required permissions to execute this command";
@@ -125,5 +127,8 @@ public class Conf {
             = ChatColor.RED + "You do not have a mine to manage! To create a mine, type /vyprison create";
     public static String CMD_MANAGE_MINE_FETCH_FAILED
             = ChatColor.RED + "An error occured while loading your mine, please try again later";
+
+    public static String CMD_TIER_UPDATE_FAILED
+            = ChatColor.RED + "Something went wrong while upgrading your tier";
 
 }

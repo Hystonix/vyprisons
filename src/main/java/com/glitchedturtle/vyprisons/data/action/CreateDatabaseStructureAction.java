@@ -1,6 +1,7 @@
 package com.glitchedturtle.vyprisons.data.action;
 
 import com.glitchedturtle.vyprisons.data.IDatabaseAction;
+import com.glitchedturtle.vyprisons.player.mine.MineAccessLevel;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -24,6 +25,7 @@ public class CreateDatabaseStructureAction implements IDatabaseAction<Void> {
                         + "`owner_uuid` VARCHAR(36) NOT NULL,"
                         + "`active_schematic` TINYINT(8),"
                         + "`tier` TINYINT(8) DEFAULT 1,"
+                        + "`access_level` VARCHAR(32) DEFAULT \"" + MineAccessLevel.PRIVATE.toString() + "\","
                     + "PRIMARY KEY(`owner_uuid`))"
         ).execute();
 

@@ -1,4 +1,4 @@
-package com.glitchedturtle.vyprisons.player.mine.action;
+package com.glitchedturtle.vyprisons.player.mine.action.tier;
 
 import com.glitchedturtle.vyprisons.data.IDatabaseAction;
 

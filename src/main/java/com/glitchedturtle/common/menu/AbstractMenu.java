@@ -12,10 +12,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.ref.WeakReference;
 
-public abstract class AbstractMenu {
+public abstract class AbstractMenu<I extends JavaPlugin> {
 
     private MenuManager _menuManager;
-    private JavaPlugin _javaPlugin;
+    private I _javaPlugin;
 
     private WeakReference<Player> _owner;
     private boolean _active = false;
@@ -24,7 +24,7 @@ public abstract class AbstractMenu {
     private AbstractMenuPage _activePage = null;
     private Inventory _inventory;
 
-    void initialize(MenuManager menuManager, JavaPlugin javaPlugin, Player ply) {
+    void initialize(MenuManager menuManager, I javaPlugin, Player ply) {
 
         TAssert.assertFalse(_active, "Menu already active");
         TAssert.assertTrue(ply != null, "Player must be non-null");
@@ -108,6 +108,9 @@ public abstract class AbstractMenu {
 
     public Player getPlayer() {
         return _owner.get();
+    }
+    public I getPlugin() {
+        return _javaPlugin;
     }
 
     Inventory getInventory() {

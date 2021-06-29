@@ -44,6 +44,9 @@ public class SchematicPool {
                 Conf.MINE_POOL_MIN_AVAILABLE - _availableInstances.size()
         );
 
+        if(toCreate <= 0)
+            return;
+
         System.out.println("[Schematic] Creating " + toCreate + " more instances of mine '" + _type.getName() + "'");
         for(int i = 0; i < toCreate; i++) this.attemptCreateInstance();
 

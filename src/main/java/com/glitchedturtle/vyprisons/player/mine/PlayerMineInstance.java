@@ -4,14 +4,18 @@ import com.glitchedturtle.common.util.TAssert;
 import com.glitchedturtle.vyprisons.configuration.Conf;
 import com.glitchedturtle.vyprisons.data.DatabaseConnector;
 import com.glitchedturtle.vyprisons.player.VyPlayer;
-import com.glitchedturtle.vyprisons.player.mine.action.IncrementMineTierAction;
-import com.glitchedturtle.vyprisons.player.mine.action.SetMineTierAction;
+import com.glitchedturtle.vyprisons.player.mine.action.FetchMineInstanceAction;
+import com.glitchedturtle.vyprisons.player.mine.action.privacy.SetMineAccessLevelAction;
+import com.glitchedturtle.vyprisons.player.mine.action.tier.IncrementMineTierAction;
+import com.glitchedturtle.vyprisons.player.mine.action.tier.SetMineTierAction;
+import com.glitchedturtle.vyprisons.player.mine.action.type.SetSchematicTypeAction;
 import com.glitchedturtle.vyprisons.player.mine.reset.MineResetManager;
 import com.glitchedturtle.vyprisons.player.mine.reset.MineResetWorker;
 import com.glitchedturtle.vyprisons.schematic.SchematicManager;
 import com.glitchedturtle.vyprisons.schematic.SchematicType;
 import com.glitchedturtle.vyprisons.schematic.pool.SchematicInstance;
 import com.glitchedturtle.vyprisons.schematic.pool.SchematicPool;
+import com.google.common.base.Enums;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -47,17 +51,55 @@ public class PlayerMineInstance {
 
     }
 
+    PlayerMineInstance(PlayerMineManager manager, UUID ownerUuid, FetchMineInstanceAction.Response res) {
+
+        _mineManager = manager;
+        _ownerUuid = ownerUuid;
+
+        _tier = res.getTier();
+        _activeSchematic = _mineManager.getSchematicManager().getById(res.getActiveSchematicId());
+
+        _accessLevel = Enums.getIfPresent(MineAccessLevel.class, res.getAccessLevel())
+                .or(MineAccessLevel.PRIVATE);
+
+    }
+
     void setSchematic(SchematicType type) {
         _activeSchematic = type;
     }
 
+    public CompletableFuture<Void> setType(SchematicType type) {
+
+        DatabaseConnector connector = _mineManager.getDatabaseConnector();
+
+        return connector.execute(new SetSchematicTypeAction(_ownerUuid, type.getIdentifier())).whenComplete((v, ex) -> {
+
+            if(ex != null) {
+
+                ex.printStackTrace();
+                return;
+
+            }
+
+            _activeSchematic = type;
+            this.assignSchematicInstance();
+
+        });
+
+    }
+
     void assignSchematicInstance() {
+
+        if(_schematicInstance != null)
+            _schematicInstance.relinquish();
 
         SchematicManager manager = _mineManager.getSchematicManager();
         SchematicPool pool = manager.getPool(_activeSchematic);
 
         TAssert.assertTrue(pool != null, "No pool registered for given type");
         _schematicInstance = pool.reserveAvailable(this);
+
+        // TODO: teleport current visitors to new mine
 
     }
 
@@ -132,7 +174,7 @@ public class PlayerMineInstance {
     }
 
     public Material randomMineType() {
-        return _mineManager.getCompositionManager()
+        return _mineManager.getTierManager()
                 .randomType(_tier);
     }
 
@@ -205,7 +247,10 @@ public class PlayerMineInstance {
                 return;
             }
 
-            _tier += val;
+            _tier = val;
+            this.doUpgradeEffects();
+            if(!this.isResetting())
+                this.resetMine();
 
         });
 
@@ -224,7 +269,18 @@ public class PlayerMineInstance {
 
             _tier = newTier;
 
+            this.doUpgradeEffects();
+            if(!this.isResetting())
+                this.resetMine();
+
         });
+
+    }
+
+    private void doUpgradeEffects() {
+
+        this.broadcast(Conf.MINE_TIER_UPGRADE);
+        // TODO: more effects
 
     }
 
@@ -251,6 +307,8 @@ public class PlayerMineInstance {
 
     public void setAccessLevel(MineAccessLevel accessLevel) {
 
+        DatabaseConnector connector = _mineManager.getDatabaseConnector();
+
         String bcMessage;
         switch(accessLevel) {
             case PUBLIC:
@@ -267,6 +325,8 @@ public class PlayerMineInstance {
         }
 
         _accessLevel = accessLevel;
+        connector.execute(new SetMineAccessLevelAction(_ownerUuid, accessLevel));
+
         for(VyPlayer vyPlayer : this.getVisitors()) {
 
             Player ply = vyPlayer.getPlayer();
@@ -278,7 +338,17 @@ public class PlayerMineInstance {
             }
 
         }
+    }
 
+    public void broadcast(String msg) {
+
+        for(Player ply : this.getPlayerVisitors())
+            ply.sendMessage(msg);
+
+    }
+
+    public PlayerMineManager getMineManager() {
+        return _mineManager;
     }
 
 }

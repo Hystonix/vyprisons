@@ -130,6 +130,8 @@ public class VyPlayer {
         Player ply = this.getPlayer();
 
         SchematicInstance instance = mine.getSchematicInstance();
+        if(instance == null)
+            return;
         if(instance.getState() != SchematicInstance.InstanceState.READY) {
 
             if(!mine.attemptReassign()) {

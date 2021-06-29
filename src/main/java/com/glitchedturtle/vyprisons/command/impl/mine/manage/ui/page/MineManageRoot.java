@@ -6,6 +6,7 @@ import com.glitchedturtle.vyprisons.VyPrisonPlugin;
 import com.glitchedturtle.vyprisons.command.impl.mine.manage.ui.MineManageMenu;
 import com.glitchedturtle.vyprisons.player.VyPlayer;
 import com.glitchedturtle.vyprisons.player.mine.PlayerMineInstance;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -49,7 +50,8 @@ public class MineManageRoot extends AbstractMenuPage<MineManageMenu> {
                     ChatColor.GRAY + "Configure the access setting for your mine",
                     ChatColor.GRAY + "to set which player's can visit.",
                     "",
-                    ChatColor.GRAY + "Current setting: " + ChatColor.YELLOW + "Public"
+                    ChatColor.GRAY + "Current setting: "
+                            + ChatColor.YELLOW + StringUtils.capitalize(instance.getAccessLevel().toString().toLowerCase())
             ).build()
         );
         inv.setItem(14, ItemBuilder.create(Material.GOLD_INGOT)
@@ -96,14 +98,19 @@ public class MineManageRoot extends AbstractMenuPage<MineManageMenu> {
             case END_CRYSTAL:
                 ply.closeInventory();
 
-                VyPlayer vyPlayer = JavaPlugin.getPlugin(VyPrisonPlugin.class).getPlayerManager()
-                        .fetchPlayer(ply.getUniqueId()); // TODO: bruh
+                VyPlayer vyPlayer = this.getMenu().getPlugin().getPlayerManager()
+                        .fetchPlayer(ply.getUniqueId());
                 vyPlayer.warpToMine(menu.getMineInstance());
 
-                break;
+                return;
             case IRON_DOOR:
                 menu.openPage(new MinePrivacyPage(menu));
                 return;
+            case BEACON:
+                menu.openPage(new MineTierPage(menu));
+                return;
+            case ROSE_BUSH:
+                menu.openPage(new MineStylePage(menu));
         }
 
     }

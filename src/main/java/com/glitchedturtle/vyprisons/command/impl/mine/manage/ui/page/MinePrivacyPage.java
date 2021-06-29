@@ -23,7 +23,13 @@ public class MinePrivacyPage extends AbstractMenuPage<MineManageMenu> {
 
     @Override
     public void populatePage(Inventory inv) {
+
+        inv.setItem(0, ItemBuilder.create(Material.BLUE_BED)
+                .displayName(ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + "... Go back")
+                .build()
+        );
         this.updatePage(inv);
+
     }
 
     @Override
@@ -32,10 +38,6 @@ public class MinePrivacyPage extends AbstractMenuPage<MineManageMenu> {
         MineAccessLevel level = this.getMenu().getMineInstance()
                 .getAccessLevel();
 
-        inv.setItem(0, ItemBuilder.create(Material.BLUE_BED)
-                .displayName(ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + "... Go back")
-                .build()
-        );
         inv.setItem(12, ItemBuilder.create(Material.OAK_DOOR)
             .displayName(ChatColor.GREEN + ChatColor.BOLD.toString() + "Public")
             .lore(
@@ -94,7 +96,7 @@ public class MinePrivacyPage extends AbstractMenuPage<MineManageMenu> {
                 return;
         }
 
-        ply.playSound(ply.getEyeLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
+        ply.playSound(ply.getEyeLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
         menu.getMineInstance().setAccessLevel(newLevel);
 
         this.updatePage(ev.getInventory());

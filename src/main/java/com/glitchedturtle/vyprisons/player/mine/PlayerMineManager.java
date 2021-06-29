@@ -3,7 +3,6 @@ package com.glitchedturtle.vyprisons.player.mine;
 import com.glitchedturtle.vyprisons.PluginStartException;
 import com.glitchedturtle.vyprisons.VyPrisonPlugin;
 import com.glitchedturtle.vyprisons.data.DatabaseConnector;
-import com.glitchedturtle.vyprisons.player.VyPlayer;
 import com.glitchedturtle.vyprisons.player.VyPlayerManager;
 import com.glitchedturtle.vyprisons.player.mine.action.CreateMineInstanceAction;
 import com.glitchedturtle.vyprisons.player.mine.action.FetchMineInstanceAction;
@@ -24,7 +23,7 @@ public class PlayerMineManager {
     private SchematicManager _schematicManager;
 
     private MineResetManager _resetManager;
-    private MineCompositionManager _compositionManager;
+    private MineTierManager _tierManager;
 
     private MineManipulationHandler _mineManipulationHandler;
     private PlayerPositionHandler _minePositionHandler;
@@ -36,7 +35,7 @@ public class PlayerMineManager {
 
         _resetManager = new MineResetManager(plugin);
 
-        _compositionManager = new MineCompositionManager();
+        _tierManager = new MineTierManager();
 
         _mineManipulationHandler = new MineManipulationHandler(playerManager);
         _minePositionHandler = new PlayerPositionHandler(playerManager);
@@ -49,7 +48,7 @@ public class PlayerMineManager {
     }
 
     public void initialize(ConfigurationSection section) throws PluginStartException {
-        _compositionManager.loadConfiguration(section);
+        _tierManager.loadConfiguration(section);
     }
 
     public CompletableFuture<PlayerMineInstance> loadMine(UUID uuid) {
@@ -66,9 +65,7 @@ public class PlayerMineManager {
             if(type == null)
                 type = _schematicManager.getDefaultType();
 
-            PlayerMineInstance instance = new PlayerMineInstance(this, uuid);
-
-            instance.setSchematic(type);
+            PlayerMineInstance instance = new PlayerMineInstance(this, uuid, res);
             instance.assignSchematicInstance();
 
             return instance;
@@ -103,8 +100,8 @@ public class PlayerMineManager {
     }
     MineResetManager getResetManager() { return _resetManager; }
 
-    MineCompositionManager getCompositionManager() {
-        return _compositionManager;
+    public MineTierManager getTierManager() {
+        return _tierManager;
     }
 
     DatabaseConnector getDatabaseConnector() {

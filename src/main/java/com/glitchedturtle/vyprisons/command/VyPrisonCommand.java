@@ -14,13 +14,16 @@ import com.glitchedturtle.vyprisons.player.VyPlayerManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-public class VyPrisonCommand implements CommandExecutor {
+public class VyPrisonCommand implements CommandExecutor, TabCompleter {
 
     public VyPlayerManager _playerManager;
     public Map<String, VySubCommand> _commandMap = new HashMap<>();
@@ -89,4 +92,18 @@ public class VyPrisonCommand implements CommandExecutor {
 
     }
 
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
+
+        if(args.length <= 1) {
+
+            return _commandMap.values().stream()
+                    .filter(c -> sender.hasPermission(c.getPermissionNode()))
+                    .map(VySubCommand::getName).collect(Collectors.toList());
+
+        }
+
+        return null;
+
+    }
 }

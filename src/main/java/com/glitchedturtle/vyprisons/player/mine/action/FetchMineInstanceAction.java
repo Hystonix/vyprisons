@@ -15,13 +15,20 @@ public class FetchMineInstanceAction implements IDatabaseAction<FetchMineInstanc
 
         private boolean _exists;
         private int _activeSchematicId;
+        private int _tier;
+        private String _accessLevel;
 
         public boolean doesExist() {
             return _exists;
         }
-
         public int getActiveSchematicId() {
             return _activeSchematicId;
+        }
+        public int getTier() {
+            return _tier;
+        }
+        public String getAccessLevel() {
+            return _accessLevel;
         }
 
     }
@@ -46,6 +53,9 @@ public class FetchMineInstanceAction implements IDatabaseAction<FetchMineInstanc
             return res;
 
         res._activeSchematicId = rs.getInt("active_schematic");
+        res._tier = rs.getInt("tier");
+        res._accessLevel = rs.getString("access_level");
+
         return res;
 
     }
