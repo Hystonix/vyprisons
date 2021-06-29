@@ -92,9 +92,13 @@ public class MineTierManager {
         for(String key : sect.getKeys(false)) {
 
             int tier = Integer.parseInt(key);
+
             CompositionTier compTier = new CompositionTier();
 
-            for(Map<?,?> comp : sect.getMapList(key)) {
+            ConfigurationSection tierSect = sect.getConfigurationSection(key);
+            compTier._purchasePrice = tierSect.getDouble("upgrade_cost", 0);
+
+            for(Map<?,?> comp : tierSect.getMapList("composition")) {
 
                 compTier.addType(
                         Material.valueOf((String) comp.get("type")),

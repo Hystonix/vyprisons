@@ -2,12 +2,10 @@ package com.glitchedturtle.vyprisons.schematic;
 
 import com.glitchedturtle.common.region.Region;
 import com.glitchedturtle.common.util.TAssert;
-import com.glitchedturtle.vyprisons.VyPrisonPlugin;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;

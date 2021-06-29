@@ -2,10 +2,14 @@ package com.glitchedturtle.vyprisons.command.impl.mine.manage.ui.page;
 
 import com.glitchedturtle.common.menu.AbstractMenuPage;
 import com.glitchedturtle.common.util.ItemBuilder;
+import com.glitchedturtle.common.util.TAssert;
 import com.glitchedturtle.vyprisons.command.impl.mine.manage.ui.MineManageMenu;
 import com.glitchedturtle.vyprisons.configuration.Conf;
 import com.glitchedturtle.vyprisons.player.mine.MineTierManager;
 import com.glitchedturtle.vyprisons.player.mine.PlayerMineInstance;
+import com.glitchedturtle.vyprisons.util.VaultHook;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -41,6 +45,9 @@ public class MineTierPage extends AbstractMenuPage<MineManageMenu> {
 
         MineTierManager tierManager =
                 this.getMenu().getMineInstance().getMineManager().getTierManager(); // jeez
+
+        Economy econ = VaultHook.getEconomy();
+        Player ply = this.getMenu().getPlayer();
 
         PlayerMineInstance instance = this.getMenu().getMineInstance();
         int currentTier = instance.getTier();
@@ -79,7 +86,7 @@ public class MineTierPage extends AbstractMenuPage<MineManageMenu> {
 
                 lore.add("");
 
-                boolean canAfford = true;
+                boolean canAfford = econ.has(ply, tier.getPurchasePrice());
                 if(canAfford)
                     lore.add(ChatColor.GREEN + "Left-click to purchase this tier");
                 else
@@ -128,7 +135,26 @@ public class MineTierPage extends AbstractMenuPage<MineManageMenu> {
 
         }
 
-        // TODO: Do currency validation
+        MineTierManager tierManager =
+                this.getMenu().getMineInstance().getMineManager().getTierManager(); // jeez
+        MineTierManager.CompositionTier tier = tierManager.getTier(clickedTier);
+        TAssert.assertTrue(tier != null, "Tier null");
+
+        Economy econ = VaultHook.getEconomy();
+        EconomyResponse res = econ.withdrawPlayer(ply, tier.getPurchasePrice());
+
+        if(!res.transactionSuccess()) {
+
+
+            ply.closeInventory();
+            ply.sendMessage(Conf.CMD_TIER_INSUFFICIENT_BALANCE);
+
+            ply.playSound(ply.getEyeLocation(), Sound.BLOCK_ANVIL_LAND, 1, 1);
+
+            return;
+
+        }
+
         instance.setTier(clickedTier).whenComplete((v, ex) -> {
 
             if(ex != null) {

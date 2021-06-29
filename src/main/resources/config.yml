@@ -36,16 +36,20 @@ mine:
 
 tiers:
   1:
-    - type: STONE
-      probability: 100.0
-    - type: DIAMOND_ORE
-      probability: 10.0
-    - type: EMERALD_ORE
-      probability: 1.0
-    - type: DIAMOND_BLOCK
-      probability: 1.0
+    upgrade_cost: 0
+    composition:
+      - type: STONE
+        probability: 100.0
+      - type: DIAMOND_ORE
+        probability: 10.0
+      - type: EMERALD_ORE
+        probability: 1.0
+      - type: DIAMOND_BLOCK
+        probability: 1.0
   2:
-    - type: STONE
-      probability: 100.0
-    - type: EMERALD_ORE
-      probability: 100.0
+    upgrade_cost: 1500
+    composition:
+      - type: STONE
+        probability: 100.0
+      - type: EMERALD_ORE
+        probability: 100.0

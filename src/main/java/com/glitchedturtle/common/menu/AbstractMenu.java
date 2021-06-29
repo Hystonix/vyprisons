@@ -73,6 +73,13 @@ public abstract class AbstractMenu<I extends JavaPlugin> {
 
     public void openPage(AbstractMenuPage page) {
 
+        if(!_active) {
+
+            this.setRoot(page);
+            return;
+
+        }
+
         _pageChanging = true;
 
         Player ply = this.getPlayer();

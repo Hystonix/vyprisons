@@ -99,7 +99,14 @@ public class PlayerMineInstance {
         TAssert.assertTrue(pool != null, "No pool registered for given type");
         _schematicInstance = pool.reserveAvailable(this);
 
-        // TODO: teleport current visitors to new mine
+        Location toWarp;
+        if(_schematicInstance.getState() == SchematicInstance.InstanceState.READY)
+            toWarp = _schematicInstance.getWarpPosition();
+        else
+            toWarp = Conf.DEFAULT_TP_POSITION.toLocation(Conf.DEFAULT_TP_WORLD.getWorld());
+
+        for(Player ply : this.getPlayerVisitors())
+            ply.teleport(toWarp);
 
     }
 

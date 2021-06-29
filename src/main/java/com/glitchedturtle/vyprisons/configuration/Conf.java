@@ -130,5 +130,7 @@ public class Conf {
 
     public static String CMD_TIER_UPDATE_FAILED
             = ChatColor.RED + "Something went wrong while upgrading your tier";
+    public static String CMD_TIER_INSUFFICIENT_BALANCE
+            = ChatColor.GRAY + "You do not have sufficient balance to purchase this tier";
 
 }

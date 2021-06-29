@@ -8,9 +8,13 @@ import com.glitchedturtle.vyprisons.command.impl.amanage.VyAdminManageCommand;
 import com.glitchedturtle.vyprisons.command.impl.mine.VyCreateCommand;
 import com.glitchedturtle.vyprisons.command.impl.mine.VyTeleportCommand;
 import com.glitchedturtle.vyprisons.command.impl.mine.manage.VyManageCommand;
+import com.glitchedturtle.vyprisons.command.impl.mine.manage.VyPrivacyCommand;
+import com.glitchedturtle.vyprisons.command.impl.mine.manage.VyStyleCommand;
+import com.glitchedturtle.vyprisons.command.impl.mine.manage.VyTierCommand;
 import com.glitchedturtle.vyprisons.configuration.Conf;
 import com.glitchedturtle.vyprisons.player.VyPlayer;
 import com.glitchedturtle.vyprisons.player.VyPlayerManager;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -36,7 +40,11 @@ public class VyPrisonCommand implements CommandExecutor, TabCompleter {
 
         this.registerCommand(new VyTeleportCommand(_playerManager));
         this.registerCommand(new VyCreateCommand(pluginInstance.getSchematicManager()));
+
         this.registerCommand(new VyManageCommand(pluginInstance.getMenuManager()));
+        this.registerCommand(new VyPrivacyCommand(pluginInstance.getMenuManager()));
+        this.registerCommand(new VyStyleCommand(pluginInstance.getMenuManager()));
+        this.registerCommand(new VyTierCommand(pluginInstance.getMenuManager()));
 
     }
 
@@ -89,6 +97,19 @@ public class VyPrisonCommand implements CommandExecutor, TabCompleter {
     }
 
     public void printCommandList(CommandSender sender) {
+
+        sender.sendMessage(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "VyPrisons Commands");
+        for(VySubCommand cmd : _commandMap.values()) {
+
+            if(!sender.hasPermission(cmd.getPermissionNode()))
+                return;
+
+            sender.sendMessage(
+                    ChatColor.LIGHT_PURPLE + "/" + cmd.getName() + " " + cmd.getUsage()
+                    + ChatColor.GRAY + " " + cmd.getDescription()
+            );
+
+        }
 
     }
 
