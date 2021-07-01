@@ -13,7 +13,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-public class VyPlayerManager implements Listener {
+public class VyPlayerManager {
 
     private DatabaseConnector _databaseConnector;
     private PlayerMineManager _mineManager;
@@ -60,6 +60,10 @@ public class VyPlayerManager implements Listener {
 
     public Collection<VyPlayer> getCachedPlayers() {
         return _playerCache.asMap().values();
+    }
+
+    public VyPlayer getCachedPlayer(UUID uniqueId) {
+        return _playerCache.getIfPresent(uniqueId);
     }
 
 }

@@ -5,6 +5,7 @@ import com.glitchedturtle.vyprisons.PluginStartException;
 import com.glitchedturtle.vyprisons.configuration.Conf;
 import com.glitchedturtle.vyprisons.data.DatabaseConnector;
 import com.glitchedturtle.vyprisons.player.mine.PlayerMineInstance;
+import com.glitchedturtle.vyprisons.schematic.SchematicManager;
 import com.glitchedturtle.vyprisons.schematic.SchematicType;
 import com.glitchedturtle.vyprisons.schematic.placer.SchematicWorkerManager;
 import com.glitchedturtle.vyprisons.schematic.pool.action.CreateProtoSchematicInstanceAction;
@@ -18,6 +19,8 @@ import java.util.concurrent.CompletableFuture;
 
 public class SchematicPool {
 
+    private SchematicManager _schematicManager;
+
     private DatabaseConnector _databaseConnector;
     private SchematicWorkerManager _placerManager;
 
@@ -26,10 +29,13 @@ public class SchematicPool {
     private LinkedList<SchematicInstance> _availableInstances = new LinkedList<>();
     private LinkedList<SchematicInstance> _reservedInstances = new LinkedList<>();
 
-    public SchematicPool(DatabaseConnector databaseConnector,
+    public SchematicPool(
+            SchematicManager schematicManager,
+            DatabaseConnector databaseConnector,
                          SchematicWorkerManager placerManager,
                          SchematicType type) {
 
+        _schematicManager = schematicManager;
         _databaseConnector = databaseConnector;
         _placerManager = placerManager;
 
@@ -82,7 +88,7 @@ public class SchematicPool {
         Although, all but the final state (in both the db and the server) can be considered as placeholders
 
      */
-    SchematicInstance attemptCreateInstance() {
+    private SchematicInstance attemptCreateInstance() {
 
         TAssert.assertTrue(this.getTotalInstances() < Conf.MINE_POOL_MAX,
                     "Schematic pool is full");
@@ -91,6 +97,7 @@ public class SchematicPool {
         // (due to the pool size being too small)
         SchematicInstance instance = new SchematicInstance(this, _type);
         _availableInstances.add(instance);
+        _schematicManager.registerInstance(instance);
 
         // Then, the instance is inserted into the database, and it's identifier (AUTO_INCREMENT in the database) is returned
         // Once the identifier has been received, the instance on the server is 'upgraded' to it's proto form, where it has an
@@ -179,9 +186,13 @@ public class SchematicPool {
 
         try {
 
-            for(FetchSchematicInstancesOfTypeAction.SchematicData data : _databaseConnector.executeSync(action))
-                _availableInstances.add(new SchematicInstance(this, _type, data.getId(), data.getOrigin()));
+            for(FetchSchematicInstancesOfTypeAction.SchematicData data : _databaseConnector.executeSync(action)) {
 
+                SchematicInstance instance = new SchematicInstance(this, _type, data.getId(), data.getOrigin());
+                _availableInstances.add(instance);
+                _schematicManager.registerInstance(instance);
+
+            }
         } catch(SQLException ex) {
             throw new PluginStartException(ex, "Schematic Pool", "Failed to fetch existing schematic instances from database");
         }

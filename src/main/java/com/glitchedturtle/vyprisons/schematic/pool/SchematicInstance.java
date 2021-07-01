@@ -73,7 +73,8 @@ public class SchematicInstance {
         int[] gridPos = this.getGridPosition();
         int blockSize = Conf.MINE_BLOCK_SIZE * 16;
 
-        Location mid = new Location(world, Math.floor(gridPos[0] * blockSize * 1.5), 0, Math.floor(gridPos[1] * blockSize * 1.5));
+        Location mid = new Location(world, Math.floor(gridPos[0] * blockSize + 0.5 * blockSize), 0,
+                Math.floor(gridPos[1] * blockSize + 0.5 * blockSize));
         mid.add(Conf.MINE_ORIGIN.toVector());
         SafeLocation midPoint = new SafeLocation(mid);
 
@@ -133,6 +134,14 @@ public class SchematicInstance {
     public Location getWarpPosition() {
         return _origin.toLocation(Conf.MINE_WORLD.getWorld())
                 .add(_type.getSpawnOffset());
+    }
+
+    public PlayerMineInstance getReservedBy() {
+
+        if(_reservedBy == null)
+            return null;
+        return _reservedBy.get();
+
     }
 
     void reserve(PlayerMineInstance reserveFor) {

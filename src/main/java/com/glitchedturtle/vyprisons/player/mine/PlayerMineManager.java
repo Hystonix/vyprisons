@@ -38,7 +38,7 @@ public class PlayerMineManager {
         _tierManager = new MineTierManager();
 
         _mineManipulationHandler = new MineManipulationHandler(playerManager);
-        _minePositionHandler = new PlayerPositionHandler(playerManager);
+        _minePositionHandler = new PlayerPositionHandler(_schematicManager, playerManager);
 
         Bukkit.getPluginManager()
                 .registerEvents(_mineManipulationHandler, plugin);
@@ -61,7 +61,7 @@ public class PlayerMineManager {
             if(!res.doesExist())
                 return null;
 
-            SchematicType type = _schematicManager.getById(res.getActiveSchematicId());
+            SchematicType type = _schematicManager.getTypeById(res.getActiveSchematicId());
             if(type == null)
                 type = _schematicManager.getDefaultType();
 

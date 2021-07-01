@@ -1,11 +1,10 @@
 package com.glitchedturtle.vyprisons.util;
 
+import java.util.Arrays;
+
 public class ElegantPair {
 
-    public static int pair(int[] pair) {
-
-        int x = pair[0];
-        int y = pair[1];
+    public static int pair(int x, int y) {
 
         if(y > x)
             return y * y + x;

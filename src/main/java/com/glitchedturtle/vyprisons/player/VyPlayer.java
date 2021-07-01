@@ -4,8 +4,10 @@ import com.glitchedturtle.common.util.TAssert;
 import com.glitchedturtle.vyprisons.configuration.Conf;
 import com.glitchedturtle.vyprisons.player.mine.PlayerMineInstance;
 import com.glitchedturtle.vyprisons.player.mine.PlayerMineManager;
+import com.glitchedturtle.vyprisons.schematic.SchematicManager;
 import com.glitchedturtle.vyprisons.schematic.SchematicType;
 import com.glitchedturtle.vyprisons.schematic.pool.SchematicInstance;
+import com.glitchedturtle.vyprisons.util.ElegantPair;
 import com.glitchedturtle.vyprisons.util.TFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -152,10 +154,11 @@ public class VyPlayer {
         }
 
         Location warpPos = instance.getWarpPosition();
+
+        this.setVisiting(mine);
         ply.teleport(warpPos);
 
         mine.validateMineState();
-        this.setVisiting(mine);
 
         ply.playSound(ply.getEyeLocation(), Conf.CMD_TELEPORT_SOUND, 1, 1);
 
@@ -173,6 +176,30 @@ public class VyPlayer {
         ply.playSound(ply.getEyeLocation(), Conf.INVALID_POSITION_SOUND, 1, 1);
 
         ply.teleport(Conf.DEFAULT_TP_POSITION.toLocation(Conf.DEFAULT_TP_WORLD.getWorld()));
+
+    }
+
+    public boolean isInValidPosition() {
+
+        Player ply = this.getPlayer();
+        if(ply == null)
+            return true;
+
+        Location pos = ply.getLocation();
+        if(pos.getWorld() != Conf.MINE_WORLD.getWorld())
+            return true;
+        if(_visiting == null)
+            return false;
+
+        SchematicInstance instance = _visiting.getSchematicInstance();
+        if(instance == null)
+            return false;
+
+        int blockSize = Conf.MINE_BLOCK_SIZE * 16;
+        return instance.getIdentifier() == ElegantPair.pair(
+                Math.floorDiv(pos.getBlockX(), blockSize),
+                Math.floorDiv(pos.getBlockZ(), blockSize)
+        );
 
     }
 

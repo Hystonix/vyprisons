@@ -4,9 +4,13 @@ import com.glitchedturtle.common.region.Region;
 import com.glitchedturtle.common.util.StringParser;
 import com.glitchedturtle.vyprisons.PluginStartException;
 import com.glitchedturtle.vyprisons.VyPrisonPlugin;
+import com.glitchedturtle.vyprisons.configuration.Conf;
 import com.glitchedturtle.vyprisons.schematic.placer.SchematicWorkerManager;
+import com.glitchedturtle.vyprisons.schematic.pool.SchematicInstance;
 import com.glitchedturtle.vyprisons.schematic.pool.SchematicPool;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -24,6 +28,7 @@ public class SchematicManager {
     private SchematicType _defaultType = null;
 
     private Map<SchematicType, SchematicPool> _poolRegistry = new HashMap<>();
+    private Map<Integer, SchematicInstance> _instanceMap = new HashMap<>();
 
     public SchematicManager(VyPrisonPlugin pluginInstance) {
 
@@ -41,6 +46,11 @@ public class SchematicManager {
         File[] ymlFiles = mineDirectory.listFiles((File dir, String name) -> name.endsWith(".yml"));
         if(ymlFiles == null)
             throw new PluginStartException("Schematic Manager", "Failed to load .yml files in mines directory (for some reason)");
+
+        if(Conf.MINE_WORLD_GENERATE) {
+            Bukkit.createWorld(new WorldCreator(Conf.MINE_WORLD.getName()));
+        } else if(Conf.MINE_WORLD.getWorld() == null)
+            throw new PluginStartException("Schematic Manager", "Mine world does not exist");
 
         for(File ymlFile : ymlFiles) {
 
@@ -73,7 +83,7 @@ public class SchematicManager {
 
             );
 
-            SchematicPool pool = new SchematicPool(_pluginInstance.getDatabaseConnector(), _placerManager, type);
+            SchematicPool pool = new SchematicPool(this, _pluginInstance.getDatabaseConnector(), _placerManager, type);
             pool.initialize();
 
             System.out.println("[Schematic] Created mine pool for mine '" + type.getName() + "'");
@@ -103,11 +113,24 @@ public class SchematicManager {
         return _poolRegistry.keySet();
     }
 
-    public SchematicType getById(int id) {
+    public SchematicType getTypeById(int id) {
         return _typeRegistry.get(id);
+    }
+
+    public SchematicInstance getById(int id) {
+        return _instanceMap.get(id);
+    }
+
+    public void registerInstance(SchematicInstance instance) {
+
+        System.out.println("[Schematic] Registered instance #" + instance.getIdentifier());
+        _instanceMap.put(instance.getIdentifier(), instance);
+
     }
 
     public SchematicType getDefaultType() {
         return _defaultType;
     }
+
+
 }

@@ -57,7 +57,7 @@ public class PlayerMineInstance {
         _ownerUuid = ownerUuid;
 
         _tier = res.getTier();
-        _activeSchematic = _mineManager.getSchematicManager().getById(res.getActiveSchematicId());
+        _activeSchematic = _mineManager.getSchematicManager().getTypeById(res.getActiveSchematicId());
 
         _accessLevel = Enums.getIfPresent(MineAccessLevel.class, res.getAccessLevel())
                 .or(MineAccessLevel.PRIVATE);
@@ -101,11 +101,13 @@ public class PlayerMineInstance {
         TAssert.assertTrue(pool != null, "No pool registered for given type");
         _schematicInstance = pool.reserveAvailable(this);
 
+        if(_schematicInstance == null)
+            return;
+
         Location toWarp;
         if(_schematicInstance.getState() == SchematicInstance.InstanceState.READY) {
 
             toWarp = _schematicInstance.getWarpPosition();
-
             this.resetMine();
 
         } else

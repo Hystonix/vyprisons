@@ -32,8 +32,8 @@ public class Conf {
     public static SafeLocation MINE_ORIGIN = new SafeLocation(0, 30, 0);
     @ConfKey(value="minepool.block_size", required=false)
     public static int MINE_BLOCK_SIZE = 16;
-    @ConfKey(value="minepool.block_module_size", required=false)
-    public static int MINE_BLOCK_MODULE_SIZE = 3;
+    @ConfKey(value="generate_world", required=false)
+    public static boolean MINE_WORLD_GENERATE = true; // TODO: change to false
 
     @ConfKey("minepool.min_instances")
     public static int MINE_POOL_MIN = 4;

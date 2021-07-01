@@ -15,4 +15,8 @@ public class SafeWorld {
         return Bukkit.getWorld(_worldName);
     }
 
+    public String getName() {
+        return _worldName;
+    }
+
 }

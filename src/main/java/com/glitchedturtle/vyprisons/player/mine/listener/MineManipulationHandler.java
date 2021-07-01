@@ -44,9 +44,14 @@ public class MineManipulationHandler implements Listener {
         }
 
         SchematicInstance schematicInstance = instance.getSchematicInstance();
-        if(schematicInstance == null || schematicInstance.getState() != SchematicInstance.InstanceState.READY) {
+        if(schematicInstance == null || schematicInstance.getState() != SchematicInstance.InstanceState.READY
+                || !vyPlayer.isInValidPosition()) {
+
+            event.setCancelled(true);
             vyPlayer.resetPosition();
+
             return;
+
         }
 
         Block block = event.getBlock();

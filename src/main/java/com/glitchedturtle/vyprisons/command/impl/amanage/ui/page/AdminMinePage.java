@@ -63,11 +63,18 @@ public class AdminMinePage extends AbstractMenuPage<AdminManageMenu> {
             lore.add(ChatColor.GRAY + instance.getType().getName());
             lore.add("");
 
-            String perc = TFormatter.formatPercentage(instance.getBlocksRemaining() * 1.0d /
-                    instance.getSchematicInstance().getMineRegion().getVolume());
-            lore.add(ChatColor.GRAY + "Blocks remaining: " + ChatColor.YELLOW + instance.getBlocksRemaining() + " (" + perc + ")");
-            if(instance.isResetting())
-                lore.add(ChatColor.GOLD + "\u23F1 Mine reset queued or in-progress");
+            if(instance.getSchematicInstance() != null) {
+
+                String perc = TFormatter.formatPercentage(instance.getBlocksRemaining() * 1.0d /
+                        instance.getSchematicInstance().getMineRegion().getVolume());
+                lore.add(ChatColor.GRAY + "Blocks remaining: " + ChatColor.YELLOW + instance.getBlocksRemaining() + " (" + perc + ")");
+                if (instance.isResetting())
+                    lore.add(ChatColor.GOLD + "\u23F1 Mine reset queued or in-progress");
+
+
+            } else {
+                lore.add(ChatColor.GRAY + "Mine instance not ready");
+            }
 
             lore.add("");
             lore.add(ChatColor.GRAY + "Current visitors: " + ChatColor.YELLOW + instance.getVisitors().size());
