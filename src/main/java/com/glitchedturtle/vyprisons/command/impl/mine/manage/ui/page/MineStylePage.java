@@ -3,6 +3,8 @@ package com.glitchedturtle.vyprisons.command.impl.mine.manage.ui.page;
 import com.glitchedturtle.common.menu.AbstractMenuPage;
 import com.glitchedturtle.common.util.ItemBuilder;
 import com.glitchedturtle.vyprisons.command.impl.mine.manage.ui.MineManageMenu;
+import com.glitchedturtle.vyprisons.configuration.Conf;
+import com.glitchedturtle.vyprisons.player.VyPlayer;
 import com.glitchedturtle.vyprisons.player.mine.PlayerMineInstance;
 import com.glitchedturtle.vyprisons.schematic.SchematicManager;
 import com.glitchedturtle.vyprisons.schematic.SchematicType;
@@ -100,6 +102,10 @@ public class MineStylePage extends AbstractMenuPage<MineManageMenu> {
             return;
 
         }
+
+        VyPlayer vyPlayer = this.getMenu().getVyPlayer();
+        if(vyPlayer.doCooldown("Update style", Conf.MINE_STYLE_UPDATE_COOLDOWN))
+            return;
 
         SchematicType type = _typeMap.get(ev.getSlot());
         if(type == null)

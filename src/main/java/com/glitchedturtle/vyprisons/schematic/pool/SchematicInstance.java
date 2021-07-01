@@ -9,7 +9,7 @@ import com.glitchedturtle.vyprisons.schematic.SchematicType;
 import com.glitchedturtle.vyprisons.schematic.placer.SchematicWorker;
 import com.glitchedturtle.vyprisons.schematic.placer.SchematicWorkerManager;
 import com.glitchedturtle.vyprisons.util.DebugFlag;
-import com.glitchedturtle.vyprisons.util.GridCalculator;
+import com.glitchedturtle.vyprisons.util.ElegantPair;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -43,6 +43,7 @@ public class SchematicInstance {
 
         _pool = pool;
         _id = id;
+
         _type = type;
         _origin = origin;
 
@@ -98,10 +99,7 @@ public class SchematicInstance {
     }
 
     public int[] getGridPosition() {
-
-        GridCalculator grid = GridCalculator.getDefaultGrid();
-        return grid.getGridPosition(_id);
-
+        return ElegantPair.unpair(_id);
     }
 
     public int getIdentifier() {

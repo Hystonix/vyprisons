@@ -1,5 +1,6 @@
 package com.glitchedturtle.vyprisons.util;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -9,7 +10,8 @@ import org.bukkit.Material;
 
 public class TFormatter {
 
-    private static DecimalFormat DECIMAL_FORMATTER = new DecimalFormat("#0.0");
+    private static DecimalFormat DECIMAL_FORMATTER = new DecimalFormat("#.#");
+
     private static DecimalFormat LARGE_FORMAT = new DecimalFormat("###,###,###,###");
 
     public static String formatPercentage(double percentage) {
@@ -24,7 +26,11 @@ public class TFormatter {
         return LARGE_FORMAT.format(num);
     }
 
-    public static String formatTime(long time) {
+    public static String formatMs(long time) {
+        return TFormatter.formatTime(time / 1000.0d);
+    }
+
+    public static String formatTime(double time) {
 
         if(time < 60)
             return DECIMAL_FORMATTER.format(time) + " seconds";

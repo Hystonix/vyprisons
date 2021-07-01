@@ -36,7 +36,7 @@ public class VyManageCommand extends VySubPlayerCommand {
 
             }
 
-            _menuManager.openMenu(ply, new MineManageMenu(mine));
+            _menuManager.openMenu(ply, new MineManageMenu(vyPlayer, mine));
 
         });
 

@@ -6,11 +6,15 @@ import com.glitchedturtle.vyprisons.player.mine.PlayerMineInstance;
 import com.glitchedturtle.vyprisons.player.mine.PlayerMineManager;
 import com.glitchedturtle.vyprisons.schematic.SchematicType;
 import com.glitchedturtle.vyprisons.schematic.pool.SchematicInstance;
+import com.glitchedturtle.vyprisons.util.TFormatter;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -25,6 +29,8 @@ public class VyPlayer {
 
     private CompletableFuture<PlayerMineInstance> _mineFuture = null;
     private CompletableFuture<PlayerMineInstance> _mineCreateFuture = null;
+
+    private Map<String, Long> _cooldownMap = new HashMap<>();
 
     VyPlayer(VyPlayerManager playerManager, UUID ownerId) {
         _playerManager = playerManager;
@@ -167,6 +173,36 @@ public class VyPlayer {
         ply.playSound(ply.getEyeLocation(), Conf.INVALID_POSITION_SOUND, 1, 1);
 
         ply.teleport(Conf.DEFAULT_TP_POSITION.toLocation(Conf.DEFAULT_TP_WORLD.getWorld()));
+
+    }
+
+    public boolean doCooldown(String token, long duration) {
+
+        if(!_cooldownMap.containsKey(token)) {
+
+            _cooldownMap.put(token, System.currentTimeMillis() + duration);
+            return false;
+
+        }
+
+        long expireAt = _cooldownMap.get(token);
+        if(expireAt > System.currentTimeMillis()) {
+
+            Player ply = this.getPlayer();
+            if(ply != null) {
+
+                ply.sendMessage(ChatColor.GRAY + "You can not " + ChatColor.LIGHT_PURPLE + token
+                        + ChatColor.GRAY + "for another " + ChatColor.LIGHT_PURPLE +
+                        TFormatter.formatMs(expireAt - System.currentTimeMillis()));
+
+            }
+
+            return true;
+
+        }
+
+        _cooldownMap.remove(token);
+        return false;
 
     }
 

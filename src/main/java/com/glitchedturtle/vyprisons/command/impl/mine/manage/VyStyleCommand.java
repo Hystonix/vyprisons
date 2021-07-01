@@ -37,7 +37,7 @@ public class VyStyleCommand extends VySubPlayerCommand {
 
             }
 
-            MineManageMenu menu = new MineManageMenu(mine);
+            MineManageMenu menu = new MineManageMenu(vyPlayer, mine);
             menu.openPage(new MineStylePage(menu));
 
             _menuManager.openMenu(ply, menu);

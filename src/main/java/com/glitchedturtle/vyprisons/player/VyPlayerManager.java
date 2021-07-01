@@ -6,10 +6,7 @@ import com.glitchedturtle.vyprisons.data.DatabaseConnector;
 import com.glitchedturtle.vyprisons.player.mine.PlayerMineManager;
 import com.google.common.cache.*;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -31,7 +28,7 @@ public class VyPlayerManager implements Listener {
         _mineManager = new PlayerMineManager(pluginInstance, this);
 
         _playerCache = CacheBuilder.newBuilder()
-                .expireAfterAccess(15, TimeUnit.MINUTES)
+                .expireAfterAccess(30, TimeUnit.MINUTES)
                 .removalListener(this::handleRemoval)
                     .build(new VyPlayerLoader(this));
         _tierConf = pluginInstance.getConfig().getConfigurationSection("tiers");
@@ -63,11 +60,6 @@ public class VyPlayerManager implements Listener {
 
     public Collection<VyPlayer> getCachedPlayers() {
         return _playerCache.asMap().values();
-    }
-
-    @EventHandler
-    public void onQuit(PlayerQuitEvent event) {
-        _playerCache.invalidate(event.getPlayer().getUniqueId());
     }
 
 }

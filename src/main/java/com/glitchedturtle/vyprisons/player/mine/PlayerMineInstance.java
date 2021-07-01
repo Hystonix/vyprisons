@@ -81,7 +81,9 @@ public class PlayerMineInstance {
 
             }
 
+            _resetJob = null;
             _activeSchematic = type;
+
             this.assignSchematicInstance();
 
         });
@@ -100,9 +102,13 @@ public class PlayerMineInstance {
         _schematicInstance = pool.reserveAvailable(this);
 
         Location toWarp;
-        if(_schematicInstance.getState() == SchematicInstance.InstanceState.READY)
+        if(_schematicInstance.getState() == SchematicInstance.InstanceState.READY) {
+
             toWarp = _schematicInstance.getWarpPosition();
-        else
+
+            this.resetMine();
+
+        } else
             toWarp = Conf.DEFAULT_TP_POSITION.toLocation(Conf.DEFAULT_TP_WORLD.getWorld());
 
         for(Player ply : this.getPlayerVisitors())
@@ -203,6 +209,9 @@ public class PlayerMineInstance {
         if(_schematicInstance != null)
             _schematicInstance.relinquish();
         _schematicInstance = null;
+
+        for(Player ply : this.getPlayerVisitors())
+            ply.teleport(Conf.DEFAULT_TP_POSITION.toLocation(Conf.DEFAULT_TP_WORLD.getWorld()));
 
     }
     

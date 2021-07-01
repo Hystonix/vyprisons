@@ -38,7 +38,7 @@ public class VyPrivacyCommand extends VySubPlayerCommand {
 
             }
 
-            MineManageMenu menu = new MineManageMenu(mine);
+            MineManageMenu menu = new MineManageMenu(vyPlayer, mine);
             menu.openPage(new MinePrivacyPage(menu));
 
             _menuManager.openMenu(ply, menu);

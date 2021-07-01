@@ -92,6 +92,9 @@ public class Conf {
     public static String MINE_TIER_UPGRADE
             = ChatColor.GRAY + "The mine has leveled up to " + ChatColor.AQUA.toString() + ChatColor.BOLD.toString() + "TIER %tier%!!";
 
+    public static long MINE_STYLE_UPDATE_COOLDOWN = 15 * 60 * 1000;
+    public static long MINE_ACCESS_UPDATE_COOLDOWN = 60 * 1000;
+
     public static String CMD_MISSING_PERMISSION
             = ChatColor.RED + "You lack the required permissions to execute this command";
     public static String CMD_FAILED_PROFILE_FETCH

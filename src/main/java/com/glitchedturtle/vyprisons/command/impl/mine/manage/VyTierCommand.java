@@ -38,7 +38,7 @@ public class VyTierCommand extends VySubPlayerCommand {
 
             }
 
-            MineManageMenu menu = new MineManageMenu(mine);
+            MineManageMenu menu = new MineManageMenu(vyPlayer, mine);
             menu.openPage(new MineTierPage(menu));
 
             _menuManager.openMenu(ply, menu);

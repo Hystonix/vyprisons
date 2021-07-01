@@ -98,8 +98,7 @@ public class MineManageRoot extends AbstractMenuPage<MineManageMenu> {
             case END_CRYSTAL:
                 ply.closeInventory();
 
-                VyPlayer vyPlayer = this.getMenu().getPlugin().getPlayerManager()
-                        .fetchPlayer(ply.getUniqueId());
+                VyPlayer vyPlayer = this.getMenu().getVyPlayer();
                 vyPlayer.warpToMine(menu.getMineInstance());
 
                 return;

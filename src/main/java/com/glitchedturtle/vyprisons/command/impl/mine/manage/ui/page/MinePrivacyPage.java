@@ -6,6 +6,8 @@ import com.glitchedturtle.vyprisons.command.impl.amanage.ui.AdminManageMenu;
 import com.glitchedturtle.vyprisons.command.impl.amanage.ui.page.AdminMinePage;
 import com.glitchedturtle.vyprisons.command.impl.amanage.ui.page.AdminSchematicPage;
 import com.glitchedturtle.vyprisons.command.impl.mine.manage.ui.MineManageMenu;
+import com.glitchedturtle.vyprisons.configuration.Conf;
+import com.glitchedturtle.vyprisons.player.VyPlayer;
 import com.glitchedturtle.vyprisons.player.mine.MineAccessLevel;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -80,6 +82,10 @@ public class MinePrivacyPage extends AbstractMenuPage<MineManageMenu> {
             return;
 
         }
+
+        VyPlayer vyPlayer = this.getMenu().getVyPlayer();
+        if(vyPlayer.doCooldown("Update privacy", Conf.MINE_ACCESS_UPDATE_COOLDOWN))
+            return;
 
         MineAccessLevel newLevel;
         switch(stack.getType()) {

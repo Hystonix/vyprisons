@@ -68,6 +68,18 @@ public class MineResetWorker implements Runnable {
             _completeCallback = completeCallback;
         }
 
+        public void cancel() {
+
+            SchematicInstance instance = _instance.getSchematicInstance();
+            if(instance == null)
+                return;
+
+            Vector max = instance.getMineRegion().getDimensions()
+                    .add(new Vector(1, 0, 1));
+            _cursor[1] = max.getBlockY() + 1;
+
+        }
+
     }
 
     private MineResetManager _manager;
