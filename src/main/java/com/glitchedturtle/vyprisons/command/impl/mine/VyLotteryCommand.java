@@ -59,7 +59,7 @@ public class VyLotteryCommand extends VySubPlayerCommand {
 
         } else if(args.length > 0 && args[0].equalsIgnoreCase("manage")) {
 
-            if(ply.getUniqueId() != instance.getOwnerUniqueId()) {
+            if(!ply.getUniqueId().equals(instance.getOwnerUniqueId())) {
 
                 ply.sendMessage(Conf.CMD_LOTTERY_NOT_OWNER);
                 return;

@@ -1,5 +1,6 @@
 package com.glitchedturtle.vyprisons.player.mine.lottery;
 
+import com.glitchedturtle.common.util.TAssert;
 import com.glitchedturtle.vyprisons.configuration.Conf;
 import com.glitchedturtle.vyprisons.data.DatabaseConnector;
 import com.glitchedturtle.vyprisons.player.mine.MineAccessLevel;
@@ -60,6 +61,8 @@ public class MineLotteryHandler {
 
     public CompletableFuture<LotteryResult> selectWinner(int numWinners) {
 
+        TAssert.assertFalse(_rolling, "Already rolling");
+
         _rolling = true;
         return _dbConnector.execute(new ResetLotteryStateAction(_mineInstance.getOwnerUniqueId())).thenApply((v) -> {
 
@@ -83,6 +86,12 @@ public class MineLotteryHandler {
 
     }
 
+    public void rollLottery() {
+
+
+
+    }
+
     public boolean hasEntry(UUID uuid) {
         return _entries.contains(uuid);
     }
@@ -94,9 +103,11 @@ public class MineLotteryHandler {
     public boolean isRolling() {
         return _rolling;
     }
+
     public boolean isLotteryEnabled() {
         return _mineInstance.getAccessLevel() != MineAccessLevel.PRIVATE;
     }
+
     public double getValue() {
         return Math.min(_lotteryValue, Conf.LOTTERY_MAX_VALUE);
     }
