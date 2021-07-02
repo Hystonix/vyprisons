@@ -108,6 +108,9 @@ public class MineManageRoot extends AbstractMenuPage<MineManageMenu> {
             case BEACON:
                 menu.openPage(new MineTierPage(menu));
                 return;
+            case GOLD_INGOT:
+                menu.openPage(new MineLotteryPage(menu));
+                return;
             case ROSE_BUSH:
                 menu.openPage(new MineStylePage(menu));
         }

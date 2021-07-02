@@ -1,6 +1,7 @@
 package com.glitchedturtle.vyprisons.command.impl.mine.manage.ui.page;
 
 import com.glitchedturtle.common.menu.AbstractMenuPage;
+import com.glitchedturtle.common.menu.impl.ConfirmPage;
 import com.glitchedturtle.common.util.ItemBuilder;
 import com.glitchedturtle.vyprisons.command.impl.amanage.ui.AdminManageMenu;
 import com.glitchedturtle.vyprisons.command.impl.amanage.ui.page.AdminMinePage;
@@ -16,6 +17,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
 
 public class MinePrivacyPage extends AbstractMenuPage<MineManageMenu> {
 
@@ -84,7 +87,7 @@ public class MinePrivacyPage extends AbstractMenuPage<MineManageMenu> {
         }
 
         VyPlayer vyPlayer = this.getMenu().getVyPlayer();
-        if(vyPlayer.doCooldown("Update privacy", Conf.MINE_ACCESS_UPDATE_COOLDOWN))
+        if(vyPlayer.hasCooldown("Update privacy"))
             return;
 
         MineAccessLevel newLevel;
@@ -102,9 +105,24 @@ public class MinePrivacyPage extends AbstractMenuPage<MineManageMenu> {
                 return;
         }
 
-        ply.playSound(ply.getEyeLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
-        menu.getMineInstance().setAccessLevel(newLevel);
+        menu.openPage(new ConfirmPage<>(
+                menu,
+                "Change access level to " + newLevel.name(),
+                Arrays.asList(
+                        "Are you sure you want to do this?",
+                        "Changing to a stricter access level may evict visitors from your cell"
+                ),
+                false, (res) -> {
 
+            if (res && !vyPlayer.cooldown("Update privacy", Conf.MINE_ACCESS_UPDATE_COOLDOWN))
+                menu.getMineInstance().setAccessLevel(newLevel);
+
+            menu.openPage(this);
+
+        }
+        ));
+
+        ply.playSound(ply.getEyeLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
         this.updatePage(ev.getInventory());
 
     }

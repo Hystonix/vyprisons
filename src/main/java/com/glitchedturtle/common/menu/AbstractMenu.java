@@ -135,4 +135,13 @@ public abstract class AbstractMenu<I extends JavaPlugin> {
         _activePage.handleClick(ev);
 
     }
+
+    public void handleClose() {
+
+        if(_activePage == null)
+            return;
+        _activePage.handleClose();
+
+    }
+
 }

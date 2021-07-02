@@ -197,7 +197,16 @@ public class VyPlayer {
 
     }
 
-    public boolean doCooldown(String token, long duration) {
+    public boolean hasCooldown(String token) {
+
+        if(!_cooldownMap.containsKey(token))
+            return false;
+
+        return _cooldownMap.get(token) > System.currentTimeMillis();
+
+    }
+
+    public boolean cooldown(String token, long duration) {
 
         if(!_cooldownMap.containsKey(token)) {
 

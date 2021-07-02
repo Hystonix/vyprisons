@@ -69,6 +69,8 @@ public class MenuManager implements Listener {
             return;
         if (activeMenu.isChangingPage())
             return;
+
+        activeMenu.handleClose();
         this._activeMenuMap.remove(event.getPlayer().getUniqueId());
     }
 

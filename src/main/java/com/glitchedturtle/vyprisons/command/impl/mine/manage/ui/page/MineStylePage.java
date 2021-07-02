@@ -104,7 +104,7 @@ public class MineStylePage extends AbstractMenuPage<MineManageMenu> {
         }
 
         VyPlayer vyPlayer = this.getMenu().getVyPlayer();
-        if(vyPlayer.doCooldown("Update style", Conf.MINE_STYLE_UPDATE_COOLDOWN))
+        if(vyPlayer.cooldown("Update style", Conf.MINE_STYLE_UPDATE_COOLDOWN))
             return;
 
         SchematicType type = _typeMap.get(ev.getSlot());

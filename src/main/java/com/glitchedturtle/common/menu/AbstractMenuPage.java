@@ -54,5 +54,7 @@ public abstract class AbstractMenuPage<I extends AbstractMenu> {
     public abstract void populatePage(Inventory inv);
     public abstract void updatePage(Inventory inv);
     public void handleClick(InventoryClickEvent event) { }
+    public void handleClose() {}
+
 
 }

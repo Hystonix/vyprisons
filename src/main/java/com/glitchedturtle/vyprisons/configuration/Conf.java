@@ -91,9 +91,13 @@ public class Conf {
             = ChatColor.RED + "Hence, you have been evicted from the mine";
     public static String MINE_TIER_UPGRADE
             = ChatColor.GRAY + "The mine has leveled up to " + ChatColor.AQUA.toString() + ChatColor.BOLD.toString() + "TIER %tier%!!";
+    public static String MINE_LOTTERY_ENTRY
+            = ChatColor.GRAY + "%name% has joined the mine's lottery";
 
     public static long MINE_STYLE_UPDATE_COOLDOWN = 15 * 60 * 1000;
     public static long MINE_ACCESS_UPDATE_COOLDOWN = 60 * 1000;
+
+    public static double LOTTERY_MAX_VALUE = 15000;
 
     public static String CMD_MISSING_PERMISSION
             = ChatColor.RED + "You lack the required permissions to execute this command";
@@ -136,4 +140,17 @@ public class Conf {
     public static String CMD_TIER_INSUFFICIENT_BALANCE
             = ChatColor.GRAY + "You do not have sufficient balance to purchase this tier";
 
+    public static String CMD_LOTTERY_NOT_VISITING
+            = ChatColor.RED + "You are not currently visting a mine";
+    public static String CMD_LOTTERY_NOT_OWNER
+            = ChatColor.RED + "You are not the owner of this mine";
+    public static String CMD_LOTTERY_DISABLED
+            = ChatColor.RED + "This mine's lottery is currently disabled";
+    public static String CMD_LOTTERY_ALREADY_ENTERED
+            = ChatColor.RED + "You are already a memebr of this mine's lottery";
+    public static String CMD_LOTTERY_JOINED
+            = ChatColor.GREEN + "You have joined the lottery";
+    public static String CMD_LOTTERY_INFO
+            = ChatColor.GRAY + "The lottery is currently worth " + ChatColor.YELLOW + "$%value%"
+            + ChatColor.GRAY + ", and has " + ChatColor.YELLOW + "%entry_count% participants";
 }
