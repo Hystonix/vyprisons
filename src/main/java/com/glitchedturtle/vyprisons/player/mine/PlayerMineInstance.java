@@ -9,21 +9,24 @@ import com.glitchedturtle.vyprisons.player.mine.action.privacy.SetMineAccessLeve
 import com.glitchedturtle.vyprisons.player.mine.action.tier.IncrementMineTierAction;
 import com.glitchedturtle.vyprisons.player.mine.action.tier.SetMineTierAction;
 import com.glitchedturtle.vyprisons.player.mine.action.type.SetSchematicTypeAction;
+import com.glitchedturtle.vyprisons.player.mine.lottery.MineLotteryHandler;
 import com.glitchedturtle.vyprisons.player.mine.reset.MineResetManager;
 import com.glitchedturtle.vyprisons.player.mine.reset.MineResetWorker;
 import com.glitchedturtle.vyprisons.schematic.SchematicManager;
 import com.glitchedturtle.vyprisons.schematic.SchematicType;
 import com.glitchedturtle.vyprisons.schematic.pool.SchematicInstance;
 import com.glitchedturtle.vyprisons.schematic.pool.SchematicPool;
+import com.glitchedturtle.vyprisons.util.PrisonHook;
 import com.google.common.base.Enums;
+import me.drawethree.ultraprisoncore.UltraPrisonCore;
+import me.drawethree.ultraprisoncore.gangs.models.Gang;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -44,17 +47,20 @@ public class PlayerMineInstance {
     private int _tier = 1;
     private MineAccessLevel _accessLevel = MineAccessLevel.PRIVATE;
 
+    private MineLotteryHandler _lotteryHandler;
+
     PlayerMineInstance(PlayerMineManager manager, UUID ownerUuid) {
 
         _mineManager = manager;
         _ownerUuid = ownerUuid;
 
+        _lotteryHandler = new MineLotteryHandler(this, manager.getDatabaseConnector());
+
     }
 
     PlayerMineInstance(PlayerMineManager manager, UUID ownerUuid, FetchMineInstanceAction.Response res) {
 
-        _mineManager = manager;
-        _ownerUuid = ownerUuid;
+        this(manager, ownerUuid);
 
         _tier = res.getTier();
         _activeSchematic = _mineManager.getSchematicManager().getTypeById(res.getActiveSchematicId());
@@ -206,7 +212,7 @@ public class PlayerMineInstance {
         return _schematicInstance.getWarpPosition();
     }
 
-    public void destroy() {
+    public void unload() {
 
         if(_schematicInstance != null)
             _schematicInstance.relinquish();
@@ -313,7 +319,15 @@ public class PlayerMineInstance {
             case PUBLIC:
                 return true;
             case GANG:
-                return true; // TODO: Implement gang logic
+                if(!PrisonHook.isHooked())
+                    return ply.getUniqueId().equals( _ownerUuid);
+
+                OfflinePlayer owner = Bukkit.getOfflinePlayer(_ownerUuid);
+                Optional<Gang> gang = PrisonHook.getGangAPI().getPlayerGang(owner);
+
+                if(!gang.isPresent())
+                    return ply.getUniqueId().equals( _ownerUuid);
+                return gang.get().containsPlayer(ply.getPlayer());
             case PRIVATE:
                 return ply.getUniqueId().equals( _ownerUuid);
             default:
@@ -367,6 +381,14 @@ public class PlayerMineInstance {
 
     public PlayerMineManager getMineManager() {
         return _mineManager;
+    }
+
+    public MineLotteryHandler getLotteryHandler() {
+        return _lotteryHandler;
+    }
+
+    public UUID getOwnerUniqueId() {
+        return _ownerUuid;
     }
 
 }

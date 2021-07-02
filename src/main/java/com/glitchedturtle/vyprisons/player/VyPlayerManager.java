@@ -6,7 +6,6 @@ import com.glitchedturtle.vyprisons.data.DatabaseConnector;
 import com.glitchedturtle.vyprisons.player.mine.PlayerMineManager;
 import com.google.common.cache.*;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.event.Listener;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -41,7 +40,7 @@ public class VyPlayerManager {
 
     private void handleRemoval(RemovalNotification<UUID, VyPlayer> notif) {
 
-        notif.getValue().destroy();
+        notif.getValue().unload();
 
     }
 

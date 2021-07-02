@@ -4,7 +4,6 @@ import com.glitchedturtle.common.util.TAssert;
 import com.glitchedturtle.vyprisons.configuration.Conf;
 import com.glitchedturtle.vyprisons.player.mine.PlayerMineInstance;
 import com.glitchedturtle.vyprisons.player.mine.PlayerMineManager;
-import com.glitchedturtle.vyprisons.schematic.SchematicManager;
 import com.glitchedturtle.vyprisons.schematic.SchematicType;
 import com.glitchedturtle.vyprisons.schematic.pool.SchematicInstance;
 import com.glitchedturtle.vyprisons.util.ElegantPair;
@@ -39,18 +38,13 @@ public class VyPlayer {
         _ownerId = ownerId;
     }
 
-    public void destroy() {
-
-        if(_mineFuture != null)
-            _mineFuture.cancel(true);
-        if(_mineCreateFuture != null)
-            _mineCreateFuture.cancel(true);
+    public void unload() {
 
         _mineFuture = null;
         _mineCreateFuture = null;
 
         if(_mine != null)
-            _mine.destroy();
+            _mine.unload();
         _mine = null;
 
         if(_visiting != null)

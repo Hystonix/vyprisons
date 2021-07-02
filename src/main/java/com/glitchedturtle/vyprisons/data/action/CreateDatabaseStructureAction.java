@@ -29,6 +29,13 @@ public class CreateDatabaseStructureAction implements IDatabaseAction<Void> {
                     + "PRIMARY KEY(`owner_uuid`))"
         ).execute();
 
+        con.prepareStatement(
+                "CREATE TABLE IF NOT EXISTS `vy_lottery_entry` ("
+                        + "`mine_owner_uuid` VARCHAR(36) NOT NULL,"
+                        + "`entry_owner_uuid` VARCHAR(36) NOT NULL,"
+                    + "PRIMARY KEY(`mine_owner_uuid`,`entry_owner_uuid`))"
+        ).execute();
+
         return null;
 
     }

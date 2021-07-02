@@ -57,7 +57,7 @@ public class PlayerPositionHandler implements Listener {
         Player ply = ev.getPlayer();
         Location to = ev.getTo();
 
-        VyPlayer vyPlayer = _playerManager.fetchPlayer(ply.getUniqueId());
+        VyPlayer vyPlayer = _playerManager.getCachedPlayer(ply.getUniqueId());
 
         if(to.getWorld() != Conf.MINE_WORLD.getWorld()) {
 
@@ -65,6 +65,9 @@ public class PlayerPositionHandler implements Listener {
             return;
 
         }
+
+        if(vyPlayer == null)
+            vyPlayer = _playerManager.fetchPlayer(ply.getUniqueId());
 
         int blockSize = Conf.MINE_BLOCK_SIZE * 16;
         int id = ElegantPair.pair(
