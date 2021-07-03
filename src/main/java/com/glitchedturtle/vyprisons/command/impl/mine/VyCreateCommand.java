@@ -50,8 +50,6 @@ public class VyCreateCommand extends VySubPlayerCommand {
                 if(mine.canWarp()) { // TODO: Refractor into PlayerMineInstance#isPermitted
 
                     ply.teleport(mine.getWarpPosition());
-
-                    vyPlayer.setVisiting(mine);
                     mine.validateMineState();
 
                 }

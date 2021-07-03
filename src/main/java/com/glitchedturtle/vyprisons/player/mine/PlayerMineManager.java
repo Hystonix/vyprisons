@@ -8,11 +8,13 @@ import com.glitchedturtle.vyprisons.player.mine.action.CreateMineInstanceAction;
 import com.glitchedturtle.vyprisons.player.mine.action.FetchMineInstanceAction;
 import com.glitchedturtle.vyprisons.player.mine.listener.MineManipulationHandler;
 import com.glitchedturtle.vyprisons.player.mine.listener.PlayerPositionHandler;
+import com.glitchedturtle.vyprisons.player.mine.listener.SellAllHandler;
 import com.glitchedturtle.vyprisons.player.mine.reset.MineResetManager;
 import com.glitchedturtle.vyprisons.schematic.SchematicManager;
 import com.glitchedturtle.vyprisons.schematic.SchematicType;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.plugin.PluginManager;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -27,6 +29,7 @@ public class PlayerMineManager {
 
     private MineManipulationHandler _mineManipulationHandler;
     private PlayerPositionHandler _minePositionHandler;
+    private SellAllHandler _sellAllHandler;
 
     public PlayerMineManager(VyPrisonPlugin plugin, VyPlayerManager playerManager) {
 
@@ -39,11 +42,12 @@ public class PlayerMineManager {
 
         _mineManipulationHandler = new MineManipulationHandler(playerManager);
         _minePositionHandler = new PlayerPositionHandler(_schematicManager, playerManager);
+        _sellAllHandler = new SellAllHandler(playerManager);
 
-        Bukkit.getPluginManager()
-                .registerEvents(_mineManipulationHandler, plugin);
-        Bukkit.getPluginManager()
-                .registerEvents(_minePositionHandler, plugin);
+        PluginManager pm = Bukkit.getPluginManager();
+        pm.registerEvents(_mineManipulationHandler, plugin);
+        pm.registerEvents(_minePositionHandler, plugin);
+        pm.registerEvents(_sellAllHandler, plugin);
 
     }
 

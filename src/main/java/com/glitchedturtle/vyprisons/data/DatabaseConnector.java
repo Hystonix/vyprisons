@@ -107,6 +107,8 @@ public class DatabaseConnector {
 
             } catch(SQLException ex) {
 
+                ex.printStackTrace();
+
                 Bukkit.getScheduler().runTask(JavaPlugin.getPlugin(VyPrisonPlugin.class),
                         () -> returnFuture.completeExceptionally(ex));
 

@@ -7,6 +7,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.UUID;
 
 public class FetchMineInstanceAction implements IDatabaseAction<FetchMineInstanceAction.Response> {
@@ -17,6 +20,9 @@ public class FetchMineInstanceAction implements IDatabaseAction<FetchMineInstanc
         private int _activeSchematicId;
         private int _tier;
         private String _accessLevel;
+
+        private Collection<String> _lotteryEntries;
+        private double _lotteryValue;
 
         public boolean doesExist() {
             return _exists;
@@ -29,6 +35,14 @@ public class FetchMineInstanceAction implements IDatabaseAction<FetchMineInstanc
         }
         public String getAccessLevel() {
             return _accessLevel;
+        }
+
+        public Collection<String> getLotteryEntries() {
+            return _lotteryEntries;
+        }
+
+        public double getLotteryValue() {
+            return _lotteryValue;
         }
 
     }
@@ -55,6 +69,17 @@ public class FetchMineInstanceAction implements IDatabaseAction<FetchMineInstanc
         res._activeSchematicId = rs.getInt("active_schematic");
         res._tier = rs.getInt("tier");
         res._accessLevel = rs.getString("access_level");
+        res._lotteryValue = rs.getDouble("lottery_value");
+
+        LinkedList<String> entries = new LinkedList<>();
+        PreparedStatement entriesStatement = con.prepareStatement(
+                "SELECT `entry_owner_uuid` FROM `vy_lottery_entry` WHERE `mine_owner_uuid`=?");
+        entriesStatement.setString(1, _targetUuid.toString());
+
+        ResultSet entriesRs = entriesStatement.executeQuery();
+        while(entriesRs.next())
+            entries.add(entriesRs.getString("entry_owner_uuid"));
+        res._lotteryEntries = entries;
 
         return res;
 

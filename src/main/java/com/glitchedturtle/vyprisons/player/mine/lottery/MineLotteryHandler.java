@@ -8,6 +8,13 @@ import com.glitchedturtle.vyprisons.player.mine.PlayerMineInstance;
 import com.glitchedturtle.vyprisons.player.mine.action.lottery.IncreaseLotteryValueAction;
 import com.glitchedturtle.vyprisons.player.mine.action.lottery.InsertLotteryEntryAction;
 import com.glitchedturtle.vyprisons.player.mine.action.lottery.ResetLotteryStateAction;
+import com.glitchedturtle.vyprisons.util.TFormatter;
+import com.glitchedturtle.vyprisons.util.VaultHook;
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -15,6 +22,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 public class MineLotteryHandler {
 
@@ -28,14 +36,19 @@ public class MineLotteryHandler {
     private PlayerMineInstance _mineInstance;
     private DatabaseConnector _dbConnector;
 
-    private Set<UUID> _entries = new HashSet<>();
+    private Set<UUID> _entries;
     private double _lotteryValue = 0;
 
     private boolean _rolling = false;
 
-    public MineLotteryHandler(PlayerMineInstance mineInstance, DatabaseConnector dbConnector) {
+    public MineLotteryHandler(PlayerMineInstance mineInstance, DatabaseConnector dbConnector, Set<UUID> entries, double lotteryValue) {
+
         _mineInstance = mineInstance;
         _dbConnector = dbConnector;
+
+        _entries = entries;
+        _lotteryValue = lotteryValue;
+
     }
 
     public CompletableFuture<Void> addEntry(UUID uuid) {
@@ -86,9 +99,43 @@ public class MineLotteryHandler {
 
     }
 
-    public void rollLottery() {
+    public void rollLottery(int numWinners) {
 
+        this.selectWinner(numWinners).thenAccept((result) -> {
 
+            double prize = result._value / result._winners.size();
+
+            _mineInstance.broadcast(Conf.MINE_LOTTERY_WINNERS
+                    .replaceAll("%winners%", result._winners.stream()
+                            .map(Bukkit::getOfflinePlayer).map(OfflinePlayer::getName)
+                            .collect(Collectors.joining(", ")))
+                    .replaceAll("%prize%", TFormatter.formatLargeNumber(Math.round(prize)))
+            );
+
+            Economy econ = VaultHook.getEconomy();
+
+            OfflinePlayer owner = Bukkit.getOfflinePlayer(_mineInstance.getOwnerUniqueId());
+
+            for(UUID winner : result._winners) {
+
+                OfflinePlayer ply = Bukkit.getOfflinePlayer(winner);
+                econ.depositPlayer(ply, prize);
+
+                if(ply.isOnline()) {
+
+                    Player onlinePlayer = ply.getPlayer();
+
+                    onlinePlayer.sendMessage(Conf.MINE_LOTTERY_WINNER_MSG
+                        .replaceAll("%prize%", TFormatter.formatLargeNumber(Math.round(prize)))
+                            .replaceAll("%name%", owner.getName())
+                    );
+                    onlinePlayer.playSound(onlinePlayer.getEyeLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+
+                }
+
+            }
+
+        });
 
     }
 

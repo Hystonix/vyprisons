@@ -26,6 +26,8 @@ public class CreateDatabaseStructureAction implements IDatabaseAction<Void> {
                         + "`active_schematic` TINYINT(8),"
                         + "`tier` TINYINT(8) DEFAULT 1,"
                         + "`access_level` VARCHAR(32) DEFAULT \"" + MineAccessLevel.PRIVATE.toString() + "\","
+                        + "`tax_level` REAL DEFAULT 0.10,"
+                        + "`lottery_value` REAL DEFAULT 0,"
                     + "PRIMARY KEY(`owner_uuid`))"
         ).execute();
 

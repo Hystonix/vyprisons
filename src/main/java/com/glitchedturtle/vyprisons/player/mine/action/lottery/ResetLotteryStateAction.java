@@ -24,7 +24,7 @@ public class ResetLotteryStateAction implements IDatabaseAction<Void> {
         if(entryDeleteStatement.executeUpdate() == 0)
             throw new SQLException("Failed delete");
 
-        PreparedStatement resetValueStatement = con.prepareStatement("UPDATE `vy_player_mine` SET `lottery_worth`=0 WHERE `owner_uuid`=?");
+        PreparedStatement resetValueStatement = con.prepareStatement("UPDATE `vy_player_mine` SET `lottery_value`=0 WHERE `owner_uuid`=?");
         resetValueStatement.setString(1, _uuid.toString());
 
         if(resetValueStatement.executeUpdate() == 0)

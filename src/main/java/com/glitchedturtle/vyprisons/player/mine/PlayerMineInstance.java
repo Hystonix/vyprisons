@@ -17,6 +17,7 @@ import com.glitchedturtle.vyprisons.schematic.SchematicType;
 import com.glitchedturtle.vyprisons.schematic.pool.SchematicInstance;
 import com.glitchedturtle.vyprisons.schematic.pool.SchematicPool;
 import com.glitchedturtle.vyprisons.util.PrisonHook;
+import com.glitchedturtle.vyprisons.util.TFormatter;
 import com.google.common.base.Enums;
 import me.drawethree.ultraprisoncore.UltraPrisonCore;
 import me.drawethree.ultraprisoncore.gangs.models.Gang;
@@ -48,25 +49,31 @@ public class PlayerMineInstance {
     private MineAccessLevel _accessLevel = MineAccessLevel.PRIVATE;
 
     private MineLotteryHandler _lotteryHandler;
+    private double _taxLevel = 0.10;
 
     PlayerMineInstance(PlayerMineManager manager, UUID ownerUuid) {
 
         _mineManager = manager;
         _ownerUuid = ownerUuid;
 
-        _lotteryHandler = new MineLotteryHandler(this, manager.getDatabaseConnector());
+        _lotteryHandler = new MineLotteryHandler(this, manager.getDatabaseConnector(), new HashSet<>(), 0);
 
     }
 
     PlayerMineInstance(PlayerMineManager manager, UUID ownerUuid, FetchMineInstanceAction.Response res) {
 
-        this(manager, ownerUuid);
+        _mineManager = manager;
+        _ownerUuid = ownerUuid;
 
         _tier = res.getTier();
         _activeSchematic = _mineManager.getSchematicManager().getTypeById(res.getActiveSchematicId());
 
         _accessLevel = Enums.getIfPresent(MineAccessLevel.class, res.getAccessLevel())
                 .or(MineAccessLevel.PRIVATE);
+        _lotteryHandler = new MineLotteryHandler(this, manager.getDatabaseConnector(),
+                    res.getLotteryEntries().stream().map(UUID::fromString).collect(Collectors.toSet()),
+                    res.getLotteryValue()
+                );
 
     }
 
@@ -234,6 +241,19 @@ public class PlayerMineInstance {
 
     public void addPlayer(VyPlayer vyPlayer) {
         _mineVisitors.add(vyPlayer);
+
+        OfflinePlayer ownerPlayer = Bukkit.getOfflinePlayer(_ownerUuid);
+
+        Player ply = vyPlayer.getPlayer();
+        if(ply != null) {
+
+            ply.sendMessage(Conf.MINE_ENTER_MSG
+                .replaceAll("%name%", ownerPlayer.getName())
+                .replaceAll("%tax_rate%", TFormatter.formatPercentage(_taxLevel))
+            );
+
+        }
+
     }
 
     public void removePlayer(VyPlayer vyPlayer) {
@@ -389,6 +409,10 @@ public class PlayerMineInstance {
 
     public UUID getOwnerUniqueId() {
         return _ownerUuid;
+    }
+
+    public double getTaxLevel() {
+        return _taxLevel;
     }
 
 }

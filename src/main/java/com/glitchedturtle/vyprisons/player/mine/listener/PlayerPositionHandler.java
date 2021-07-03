@@ -61,6 +61,9 @@ public class PlayerPositionHandler implements Listener {
 
         if(to.getWorld() != Conf.MINE_WORLD.getWorld()) {
 
+            if(vyPlayer == null)
+                return;
+
             vyPlayer.setVisiting(null);
             return;
 

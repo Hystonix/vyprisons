@@ -93,11 +93,25 @@ public class Conf {
             = ChatColor.GRAY + "The mine has leveled up to " + ChatColor.AQUA.toString() + ChatColor.BOLD.toString() + "TIER %tier%!!";
     public static String MINE_LOTTERY_ENTRY
             = ChatColor.GRAY + "%name% has joined the mine's lottery";
-
+    public static String MINE_LOTTERY_WINNERS
+            = ChatColor.GRAY + "The wheel has spun! " + ChatColor.YELLOW + "%winners%"
+                + ChatColor.GRAY + " have each won "
+                + ChatColor.YELLOW + "$%prize%";
+    public static String MINE_LOTTERY_WINNER_MSG
+            = ChatColor.GOLD + "You have won $%prize% from %name%'s lottery";
+    public static String MINE_ENTER_MSG
+            = ChatColor.GRAY + "Welcome to " + ChatColor.YELLOW + "%name%'s "
+            + ChatColor.GRAY + " mine! Current tax rate: " + ChatColor.YELLOW + "%tax_rate%";
     public static long MINE_STYLE_UPDATE_COOLDOWN = 15 * 60 * 1000;
     public static long MINE_ACCESS_UPDATE_COOLDOWN = 60 * 1000;
+    public static long MINE_LOTTERY_JOIN_COOLDOWN = 60 * 1000;
+    public static long MINE_LOTTERY_ROLL_COOLDOWN = 15 * 1000;
 
     public static double LOTTERY_MAX_VALUE = 15000;
+    public static int LOTTERY_MIN_ENTRIES = 2;
+
+    public static double TAX_LOTTERY = 0.10;
+    public static double TAX_TO_OWNER = 0.40;
 
     public static String CMD_MISSING_PERMISSION
             = ChatColor.RED + "You lack the required permissions to execute this command";
@@ -150,6 +164,8 @@ public class Conf {
             = ChatColor.RED + "You are already a memebr of this mine's lottery";
     public static String CMD_LOTTERY_JOINED
             = ChatColor.GREEN + "You have joined the lottery";
+    public static String CMD_LOTTERY_MIN_ENTRIES
+            = ChatColor.RED + "The lottery can only be rolled after 5 people have joined";
     public static String CMD_LOTTERY_INFO
             = ChatColor.GRAY + "The lottery is currently worth " + ChatColor.YELLOW + "$%value%"
             + ChatColor.GRAY + ", and has " + ChatColor.YELLOW + "%entry_count% participants";

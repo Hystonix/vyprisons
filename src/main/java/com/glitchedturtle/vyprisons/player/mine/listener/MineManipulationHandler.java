@@ -39,8 +39,12 @@ public class MineManipulationHandler implements Listener {
 
         PlayerMineInstance instance = vyPlayer.getVisiting();
         if(instance == null) {
+
+            event.setCancelled(true);
             vyPlayer.resetPosition();
+
             return;
+
         }
 
         SchematicInstance schematicInstance = instance.getSchematicInstance();

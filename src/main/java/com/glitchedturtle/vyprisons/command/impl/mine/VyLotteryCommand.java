@@ -16,7 +16,7 @@ public class VyLotteryCommand extends VySubPlayerCommand {
     private MenuManager _menuManager;
 
     public VyLotteryCommand(MenuManager menuManager) {
-        super("lottery", "vyprison.command.lottery", "[join/manage]", "Join the current mine's lottery");
+        super("lottery", "vyprison.command.lottery", "[join/manage/roll]", "Join the current mine's lottery");
 
         _menuManager = menuManager;
 
@@ -52,10 +52,27 @@ public class VyLotteryCommand extends VySubPlayerCommand {
 
             }
 
+            if(vyPlayer.cooldown("Join lottery", Conf.MINE_LOTTERY_JOIN_COOLDOWN))
+                return;
+
             lotteryHandler.addEntry(ply.getUniqueId());
             ply.sendMessage(Conf.CMD_LOTTERY_JOINED);
 
             instance.broadcast(Conf.MINE_LOTTERY_ENTRY.replaceAll("%name%", ply.getName()));
+
+        } else if(args.length > 0 && args[0].equalsIgnoreCase("roll")) {
+
+            if(lotteryHandler.getEntries().size() < Conf.LOTTERY_MIN_ENTRIES) {
+
+                ply.sendMessage(Conf.CMD_LOTTERY_MIN_ENTRIES);
+                return;
+
+            }
+
+            if(vyPlayer.cooldown("Roll lottery", Conf.MINE_LOTTERY_ROLL_COOLDOWN))
+                return;
+
+            lotteryHandler.rollLottery(1);
 
         } else if(args.length > 0 && args[0].equalsIgnoreCase("manage")) {
 

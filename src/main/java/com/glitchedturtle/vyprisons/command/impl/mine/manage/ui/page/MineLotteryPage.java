@@ -5,11 +5,11 @@ import com.glitchedturtle.common.util.ItemBuilder;
 import com.glitchedturtle.vyprisons.command.impl.mine.manage.ui.MineManageMenu;
 import com.glitchedturtle.vyprisons.player.mine.PlayerMineInstance;
 import com.glitchedturtle.vyprisons.player.mine.lottery.MineLotteryHandler;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
@@ -65,6 +65,29 @@ public class MineLotteryPage extends AbstractMenuPage<MineManageMenu> {
             slot++;
             if((slot + 1) % 9 == 0)
                 slot += 2;
+
+        }
+
+    }
+
+    @Override
+    public void handleClick(InventoryClickEvent ev) {
+
+        ItemStack clicked = ev.getCurrentItem();
+        if(clicked == null || clicked.getType() == Material.AIR)
+            return;
+
+        MineManageMenu menu = this.getMenu();
+        Player ply = menu.getPlayer();
+
+        ply.playSound(ply.getEyeLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
+
+        if(clicked.getType() == Material.BLUE_BED) {
+
+            menu.openPage(new MineManageRoot(menu));
+            ply.playSound(ply.getEyeLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
+
+            return;
 
         }
 

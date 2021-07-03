@@ -118,6 +118,9 @@ public class VyPlayer {
 
     public void setVisiting(PlayerMineInstance visiting) {
 
+        if(_visiting == visiting)
+            return;
+
         if(_visiting != null)
             _visiting.removePlayer(this);
         if(visiting != null)

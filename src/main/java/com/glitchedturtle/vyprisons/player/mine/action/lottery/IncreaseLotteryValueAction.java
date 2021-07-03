@@ -22,7 +22,7 @@ public class IncreaseLotteryValueAction implements IDatabaseAction<Double> {
     public Double executeAction(Connection con) throws SQLException {
 
         PreparedStatement executeStatement =
-                con.prepareStatement("UPDATE `vy_player_mine` SET `lottery_worth`=`lottery_worth`+? WHERE `owner_uuid`=?");
+                con.prepareStatement("UPDATE `vy_player_mine` SET `lottery_value`=`lottery_value`+? WHERE `owner_uuid`=?");
 
         executeStatement.setDouble(1, _delta);
         executeStatement.setString(2, _ownerUuid.toString());
@@ -31,11 +31,13 @@ public class IncreaseLotteryValueAction implements IDatabaseAction<Double> {
             throw new SQLException("Update failed");
 
         PreparedStatement fetchStatement =
-                con.prepareStatement("SELECT `lottery_worth` FROM `vy_player_mine` WHERE `owner_uuid`=?");
+                con.prepareStatement("SELECT `lottery_value` FROM `vy_player_mine` WHERE `owner_uuid`=?");
         fetchStatement.setString(1, _ownerUuid.toString());
 
         ResultSet rs = fetchStatement.executeQuery();
-        return rs.getDouble("lottery_worth");
+        rs.next();
+
+        return rs.getDouble("lottery_value");
 
     }
 
