@@ -5,6 +5,7 @@ import com.glitchedturtle.vyprisons.configuration.Conf;
 import com.glitchedturtle.vyprisons.data.DatabaseConnector;
 import com.glitchedturtle.vyprisons.player.VyPlayer;
 import com.glitchedturtle.vyprisons.player.mine.action.FetchMineInstanceAction;
+import com.glitchedturtle.vyprisons.player.mine.action.lottery.SetTaxLevelAction;
 import com.glitchedturtle.vyprisons.player.mine.action.privacy.SetMineAccessLevelAction;
 import com.glitchedturtle.vyprisons.player.mine.action.tier.IncrementMineTierAction;
 import com.glitchedturtle.vyprisons.player.mine.action.tier.SetMineTierAction;
@@ -21,10 +22,7 @@ import com.glitchedturtle.vyprisons.util.TFormatter;
 import com.google.common.base.Enums;
 import me.drawethree.ultraprisoncore.UltraPrisonCore;
 import me.drawethree.ultraprisoncore.gangs.models.Gang;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -206,15 +204,6 @@ public class PlayerMineInstance {
                 .randomType(_tier);
     }
 
-    public boolean canWarp() {
-
-        if(this.getSchematicInstance() == null)
-            return false;
-        SchematicInstance instance = this.getSchematicInstance();
-
-        return instance.getState() == SchematicInstance.InstanceState.READY;
-
-    }
     public Location getWarpPosition() {
         return _schematicInstance.getWarpPosition();
     }
@@ -224,6 +213,15 @@ public class PlayerMineInstance {
         if(_schematicInstance != null)
             _schematicInstance.relinquish();
         _schematicInstance = null;
+
+        if(_resetJob != null) {
+
+            _resetJob.setCompleteCallback(null);
+            _resetJob.setBeginCallback(null);
+
+            _resetJob.cancel();
+
+        }
 
         for(Player ply : this.getPlayerVisitors())
             ply.teleport(Conf.DEFAULT_TP_POSITION.toLocation(Conf.DEFAULT_TP_WORLD.getWorld()));
@@ -321,6 +319,15 @@ public class PlayerMineInstance {
 
     }
 
+    public CompletableFuture<Void> setTaxLevel(double newLevel) {
+
+        DatabaseConnector connector = _mineManager.getDatabaseConnector();
+
+        _taxLevel = Math.min(Math.max(newLevel, Conf.TAX_MIN), Conf.TAX_MAX);
+        return connector.execute(new SetTaxLevelAction(_ownerUuid, _taxLevel)); // data consistency is not that important with things like tax level
+
+    }
+
     private void doUpgradeEffects() {
 
         this.broadcast(Conf.MINE_TIER_UPGRADE);
@@ -333,6 +340,31 @@ public class PlayerMineInstance {
     }
 
     public boolean isPermitted(VyPlayer ply) {
+
+        boolean isPermitted = this.isPermittedInternal(ply);
+        if(isPermitted)
+            return true;
+
+        Player player = ply.getPlayer();
+        if(player != null && player.hasPermission("vyprison.bypass.privacy")) {
+
+            player.sendMessage(ChatColor.RED + "You have bypassed a mine's privacy setting");
+            return true;
+
+        }
+
+        return false;
+
+    }
+
+    private boolean isPermittedInternal(VyPlayer ply) {
+
+        if(this.getSchematicInstance() == null)
+            return false;
+        SchematicInstance instance = this.getSchematicInstance();
+
+        if(instance.getState() != SchematicInstance.InstanceState.READY)
+            return false;
 
         switch(_accessLevel) {
 

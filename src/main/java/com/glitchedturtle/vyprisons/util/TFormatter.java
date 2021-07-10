@@ -16,6 +16,8 @@ public class TFormatter {
 
     public static String formatPercentage(double percentage) {
 
+        if(percentage == 0)
+            return "0%";
         if(percentage < 0.001)
             return "Less than 0.1%";
 

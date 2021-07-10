@@ -8,6 +8,7 @@ import com.glitchedturtle.vyprisons.configuration.Conf;
 import com.glitchedturtle.vyprisons.schematic.placer.SchematicWorkerManager;
 import com.glitchedturtle.vyprisons.schematic.pool.SchematicInstance;
 import com.glitchedturtle.vyprisons.schematic.pool.SchematicPool;
+import com.glitchedturtle.vyprisons.schematic.pool.action.PurgeOrphanedInstanceAction;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.WorldCreator;
@@ -15,6 +16,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,6 +40,9 @@ public class SchematicManager {
     }
 
     public void initialize() throws PluginStartException {
+
+        _pluginInstance.getDatabaseConnector()
+                .execute(new PurgeOrphanedInstanceAction());
 
         File mineDirectory = new File(_pluginInstance.getDataFolder(), "mines");
         if(!mineDirectory.exists())
@@ -63,8 +68,6 @@ public class SchematicManager {
                         "Failed to parse file '" + ymlFile.getName() + "'");
             }
 
-            // TODO: Input validation on the configuration file
-
             SchematicType type = new SchematicType(
 
                     conf.getInt("id"),
@@ -79,9 +82,16 @@ public class SchematicManager {
                     new Region(
                             StringParser.parseBlockVector(conf.getString("mine_region_a_offset")),
                             StringParser.parseBlockVector(conf.getString("mine_region_b_offset"))
+                    ),
+                    new Region(
+                            StringParser.parseBlockVector(conf.getString("bounding_region_a_offset")),
+                            StringParser.parseBlockVector(conf.getString("bounding_region_b_offset"))
                     )
 
             );
+
+            if(conf.contains("permission"))
+                type.setPermissionNode(conf.getString("permission"));
 
             SchematicPool pool = new SchematicPool(this, _pluginInstance.getDatabaseConnector(), _placerManager, type);
             pool.initialize();
@@ -122,10 +132,7 @@ public class SchematicManager {
     }
 
     public void registerInstance(SchematicInstance instance) {
-
-        System.out.println("[Schematic] Registered instance #" + instance.getIdentifier());
         _instanceMap.put(instance.getIdentifier(), instance);
-
     }
 
     public SchematicType getDefaultType() {

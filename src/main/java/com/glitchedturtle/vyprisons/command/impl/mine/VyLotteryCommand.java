@@ -62,9 +62,23 @@ public class VyLotteryCommand extends VySubPlayerCommand {
 
         } else if(args.length > 0 && args[0].equalsIgnoreCase("roll")) {
 
+            if(!ply.getUniqueId().equals(instance.getOwnerUniqueId())) {
+
+                ply.sendMessage(Conf.CMD_LOTTERY_NOT_OWNER);
+                return;
+
+            }
+
             if(lotteryHandler.getEntries().size() < Conf.LOTTERY_MIN_ENTRIES) {
 
                 ply.sendMessage(Conf.CMD_LOTTERY_MIN_ENTRIES);
+                return;
+
+            }
+
+            if(lotteryHandler.getValue() < Conf.LOTTERY_MIN_VALUE) {
+
+                ply.sendMessage(Conf.CMD_LOTTERY_MIN_VALUE);
                 return;
 
             }

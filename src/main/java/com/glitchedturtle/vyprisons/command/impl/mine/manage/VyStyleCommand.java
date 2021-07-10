@@ -48,7 +48,7 @@ public class VyStyleCommand extends VySubPlayerCommand {
 
             ex.printStackTrace();
 
-            ply.sendMessage(Conf.CMD_MANAGE_MINE_FETCH_FAILED);
+            ply.sendMessage(Conf.CMD_MANAGE_FETCH_FAILED);
             return null;
 
         });

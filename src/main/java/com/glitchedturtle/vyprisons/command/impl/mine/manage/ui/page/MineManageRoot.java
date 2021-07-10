@@ -4,8 +4,10 @@ import com.glitchedturtle.common.menu.AbstractMenuPage;
 import com.glitchedturtle.common.util.ItemBuilder;
 import com.glitchedturtle.vyprisons.VyPrisonPlugin;
 import com.glitchedturtle.vyprisons.command.impl.mine.manage.ui.MineManageMenu;
+import com.glitchedturtle.vyprisons.configuration.Conf;
 import com.glitchedturtle.vyprisons.player.VyPlayer;
 import com.glitchedturtle.vyprisons.player.mine.PlayerMineInstance;
+import com.glitchedturtle.vyprisons.util.TFormatter;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -19,7 +21,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class MineManageRoot extends AbstractMenuPage<MineManageMenu> {
 
     public MineManageRoot(MineManageMenu menu) {
-        super(menu, ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "VyPrison > " + ChatColor.RESET + "Manage your mine", 27);
+        super(menu, Conf.UI_ELEM_ROOT_PAGE_NAME, 27);
     }
 
     @Override
@@ -28,47 +30,41 @@ public class MineManageRoot extends AbstractMenuPage<MineManageMenu> {
         PlayerMineInstance instance = this.getMenu().getMineInstance();
 
         inv.setItem(10, ItemBuilder.create(Material.END_CRYSTAL)
-            .displayName(ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Teleport to mine")
+            .displayName(Conf.UI_ELEM_TELEPORT_BTN_NAME)
                 .glowing().build()
         );
 
         inv.setItem(12, ItemBuilder.create(Material.BEACON)
-            .displayName(ChatColor.GOLD + ChatColor.BOLD.toString() + "Mine Tiers")
+            .displayName(Conf.UI_ELEM_TIER_BTN_NAME)
+            .lore(Conf.UI_ELEM_TIER_BTN_DESCRIPTION)
             .lore(
                     "",
-                    ChatColor.GRAY + "Upgrade your mine's tier",
-                    ChatColor.GRAY + "to increase the rate in which valuable blocks spawn!",
-                    "",
-                    ChatColor.GRAY + "Current tier: " + ChatColor.YELLOW + instance.getTier(),
-                    ChatColor.GRAY + "Next tier cost: " + ChatColor.GOLD + "Max"
+                    ChatColor.GRAY + "Current tier: " + ChatColor.YELLOW + instance.getTier()
             ).build()
         );
         inv.setItem(13, ItemBuilder.create(Material.IRON_DOOR)
-            .displayName(ChatColor.BLUE + ChatColor.BOLD.toString() + "Mine Privacy")
+            .displayName(Conf.UI_ELEM_PRIVACY_BTN_NAME)
+            .lore(Conf.UI_ELEM_PRIVACY_BTN_DESCRIPTION)
             .lore(
-                    "",
-                    ChatColor.GRAY + "Configure the access setting for your mine",
-                    ChatColor.GRAY + "to set which player's can visit.",
                     "",
                     ChatColor.GRAY + "Current setting: "
                             + ChatColor.YELLOW + StringUtils.capitalize(instance.getAccessLevel().toString().toLowerCase())
             ).build()
         );
         inv.setItem(14, ItemBuilder.create(Material.GOLD_INGOT)
-                .displayName(ChatColor.GREEN + ChatColor.BOLD.toString() + "Mine Lottery")
+                .displayName(Conf.UI_ELEM_LOTTERY_BTN_NAME)
+                .lore(Conf.UI_ELEM_LOTTERY_BTN_DESCRIPTION)
                 .lore(
                         "",
-                        ChatColor.GRAY + "View and manage the mine's lottery",
-                        "",
-                        ChatColor.GRAY + "Current participants: " + ChatColor.YELLOW + "0",
-                        ChatColor.GRAY + "Current worth: " + ChatColor.YELLOW + "$0"
+                        ChatColor.GRAY + "Current participants: " + ChatColor.YELLOW + instance.getLotteryHandler().getEntries().size(),
+                        ChatColor.GRAY + "Current worth: " + ChatColor.YELLOW + "$"
+                                + TFormatter.formatLargeNumber(Math.round(instance.getLotteryHandler().getValue()))
                 ).build()
         );
         inv.setItem(15, ItemBuilder.create(Material.ROSE_BUSH)
-                .displayName(ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Mine Style")
+                .displayName(Conf.UI_ELEM_STYLE_BTN_NAME)
+                .lore(Conf.UI_ELEM_STYLE_BTN_DESCRIPTION)
                 .lore(
-                        "",
-                        ChatColor.GRAY + "Give your mine a new style",
                         "",
                         ChatColor.GRAY + "Current style: " + ChatColor.YELLOW +
                                 instance.getType().getName()

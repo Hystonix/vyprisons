@@ -1,4 +1,24 @@
-vyprison.command.admin
-vyprison.command.teleport
-vyprison.command.create
+# permissions required to execute commands
 vyprison.command.manage
+vyprison.command.privacy
+vyprison.command.style
+vyprison.command.tier
+vyprison.command.create
+vyprison.command.lottery
+vyprison.command.reset
+vyprison.command.tax
+vyprison.command.teleport
+vyprison.command.unload
+
+# subpermissions to execute commands on others
+vyprison.command.unload.others
+vyprison.command.teleport.others
+
+# permissions to set to privacy
+vyprison.privacy.public
+vyprison.privacy.gang
+vyprison.privacy.private
+
+# bypass restrictions as an admin
+vyprison.bypass.reset_position
+vyprison.bypass.privacy

@@ -47,7 +47,7 @@ public class VyCreateCommand extends VySubPlayerCommand {
             CompletableFuture<PlayerMineInstance> createFuture = vyPlayer.createMine(_schematicManager.getDefaultType());
             createFuture.thenAccept(mine -> {
 
-                if(mine.canWarp()) { // TODO: Refractor into PlayerMineInstance#isPermitted
+                if(mine.isPermitted(vyPlayer)) {
 
                     ply.teleport(mine.getWarpPosition());
                     mine.validateMineState();

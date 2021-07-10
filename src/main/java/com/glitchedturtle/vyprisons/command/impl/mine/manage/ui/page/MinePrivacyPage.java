@@ -3,13 +3,11 @@ package com.glitchedturtle.vyprisons.command.impl.mine.manage.ui.page;
 import com.glitchedturtle.common.menu.AbstractMenuPage;
 import com.glitchedturtle.common.menu.impl.ConfirmPage;
 import com.glitchedturtle.common.util.ItemBuilder;
-import com.glitchedturtle.vyprisons.command.impl.amanage.ui.AdminManageMenu;
-import com.glitchedturtle.vyprisons.command.impl.amanage.ui.page.AdminMinePage;
-import com.glitchedturtle.vyprisons.command.impl.amanage.ui.page.AdminSchematicPage;
 import com.glitchedturtle.vyprisons.command.impl.mine.manage.ui.MineManageMenu;
 import com.glitchedturtle.vyprisons.configuration.Conf;
 import com.glitchedturtle.vyprisons.player.VyPlayer;
 import com.glitchedturtle.vyprisons.player.mine.MineAccessLevel;
+import com.glitchedturtle.vyprisons.util.TFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -18,19 +16,17 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
-
 public class MinePrivacyPage extends AbstractMenuPage<MineManageMenu> {
 
     public MinePrivacyPage(MineManageMenu menu) {
-        super(menu, ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "VyPrison > " + ChatColor.RESET + "Privacy setting", 27);
+        super(menu, Conf.UI_ELEM_PRIVACY_PAGE_NAME, 27);
     }
 
     @Override
     public void populatePage(Inventory inv) {
 
         inv.setItem(0, ItemBuilder.create(Material.BLUE_BED)
-                .displayName(ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + "... Go back")
+                .displayName(Conf.UI_ELEM_GO_BACK_NAME)
                 .build()
         );
         this.updatePage(inv);
@@ -47,23 +43,45 @@ public class MinePrivacyPage extends AbstractMenuPage<MineManageMenu> {
             .displayName(ChatColor.GREEN + ChatColor.BOLD.toString() + "Public")
             .lore(
                     "",
-                    ChatColor.GRAY + "Anyone can access your mine"
+                    ChatColor.GRAY + "Anyone can access your mine",
+                    "", this.getTagLine(MineAccessLevel.PUBLIC)
             ).setGlowing(level == MineAccessLevel.PUBLIC).build()
         );
         inv.setItem(13, ItemBuilder.create(Material.SPRUCE_DOOR)
                 .displayName(ChatColor.GOLD + ChatColor.BOLD.toString() + "Gang Only")
                 .lore(
                         "",
-                        ChatColor.GRAY + "Only members of your gang can access your mine"
+                        ChatColor.GRAY + "Only members of your gang can access your mine",
+                        "", this.getTagLine(MineAccessLevel.GANG)
                 ).setGlowing(level == MineAccessLevel.GANG).build()
         );
         inv.setItem(14, ItemBuilder.create(Material.IRON_DOOR)
                 .displayName(ChatColor.RED + ChatColor.BOLD.toString() + "Private")
                 .lore(
                         "",
-                        ChatColor.GRAY + "Only you can access your mine"
+                        ChatColor.GRAY + "Only you can access your mine",
+                        "", this.getTagLine(MineAccessLevel.PRIVATE)
                 ).setGlowing(level == MineAccessLevel.PRIVATE).build()
         );
+
+    }
+
+    private String getTagLine(MineAccessLevel newLevel) {
+
+        MineManageMenu menu = this.getMenu();
+
+        MineAccessLevel level = menu.getMineInstance()
+                .getAccessLevel();
+        Player ply = menu.getPlayer();
+        VyPlayer vyPlayer = menu.getVyPlayer();
+
+        if(!ply.hasPermission(newLevel.getPermissionNode()))
+            return Conf.UI_ELEM_PRIVACY_TAG_PERMISSION;
+        if(newLevel == level)
+            return Conf.UI_ELEM_PRIVACY_TAG_CURRENT_SETTING;
+        if(vyPlayer.hasCooldown("Update privacy", false))
+            return Conf.UI_ELEM_PRIVACY_TAG_COOLDOWN_PREFIX + TFormatter.formatMs(vyPlayer.getCooldown("Update privacy"));
+        return Conf.UI_ELEM_PRIVACY_TAG_CALL_TO_ACTION;
 
     }
 
@@ -105,13 +123,22 @@ public class MinePrivacyPage extends AbstractMenuPage<MineManageMenu> {
                 return;
         }
 
+        MineAccessLevel level = menu.getMineInstance()
+                .getAccessLevel();
+        if(level == newLevel)
+            return;
+
+        if(!ply.hasPermission(newLevel.getPermissionNode())) {
+
+            ply.playSound(ply.getEyeLocation(), Sound.BLOCK_ANVIL_LAND, 1, 1);
+            return;
+
+        }
+
         menu.openPage(new ConfirmPage<>(
                 menu,
-                "Change access level to " + newLevel.name(),
-                Arrays.asList(
-                        "Are you sure you want to do this?",
-                        "Changing to a stricter access level may evict visitors from your cell"
-                ),
+                Conf.UI_ELEM_PRIVACY_UPDATE_CONFIRM_TITLE + newLevel.name(),
+                Conf.UI_ELEM_PRIVACY_UPDATE_CONFIRM_DESCRIPTION,
                 false, (res) -> {
 
             if (res && !vyPlayer.cooldown("Update privacy", Conf.MINE_ACCESS_UPDATE_COOLDOWN))

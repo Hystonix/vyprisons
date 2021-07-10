@@ -14,14 +14,20 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AdminMinePage extends AbstractMenuPage<AdminManageMenu> {
+
+    private Map<Integer, PlayerMineInstance> _clickMap = new HashMap<>();
 
     public AdminMinePage(AdminManageMenu menu) {
         super(menu, ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "VyPrison > " + ChatColor.DARK_GRAY + "Mine Instances", 54);
@@ -51,6 +57,7 @@ public class AdminMinePage extends AbstractMenuPage<AdminManageMenu> {
 
         VyPlayerManager playerManager = this.getMenu().getPluginInstance()
                 .getPlayerManager();
+        _clickMap.clear();
 
         int slot = 10;
         for(VyPlayer vyPlayer : playerManager.getCachedPlayers()) {
@@ -81,14 +88,14 @@ public class AdminMinePage extends AbstractMenuPage<AdminManageMenu> {
             lore.add("");
             lore.add(ChatColor.GOLD + "Left-click to teleport to instance");
             lore.add(ChatColor.RED + "Right-click to unload the instance");
-            lore.add("");
-            lore.add(ChatColor.DARK_RED + "Shift-right-click to delete all instance data and reset");
 
             inv.setItem(slot, ItemBuilder.head(vyPlayer.getUniqueId())
                     .displayName(ChatColor.GOLD.toString() + ChatColor.BOLD + vyPlayer.getName() + "'s Mine")
                     .lore(lore)
                     .build()
             );
+
+            _clickMap.put(slot, instance);
 
             slot++;
             if((slot + 1) % 9 == 0)
@@ -106,7 +113,9 @@ public class AdminMinePage extends AbstractMenuPage<AdminManageMenu> {
             return;
 
         AdminManageMenu menu = this.getMenu();
+
         Player ply = menu.getPlayer();
+        VyPlayer vyPlayer = menu.getVyPlayer();
 
         if(stack.getType() == Material.BLUE_BED) {
 
@@ -116,6 +125,31 @@ public class AdminMinePage extends AbstractMenuPage<AdminManageMenu> {
             return;
 
         }
+
+        PlayerMineInstance instance = _clickMap.get(ev.getSlot());
+        if(instance == null)
+            return;
+
+        ClickType action = ev.getClick();
+        if(action == ClickType.LEFT) {
+
+            vyPlayer.warpToMine(instance);
+            return;
+
+        }
+        if(action == ClickType.RIGHT) {
+
+            VyPlayer ownerPlayer = menu.getPluginInstance().getPlayerManager()
+                    .getCachedPlayer(instance.getOwnerUniqueId());
+
+            if(ownerPlayer != null)
+                ownerPlayer.unload();
+            else
+                instance.unload();
+
+        }
+
+        this.updatePage(ev.getClickedInventory());
 
     }
 

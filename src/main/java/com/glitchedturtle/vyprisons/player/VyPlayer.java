@@ -43,13 +43,19 @@ public class VyPlayer {
         _mineFuture = null;
         _mineCreateFuture = null;
 
-        if(_mine != null)
-            _mine.unload();
-        _mine = null;
+        this.unloadMine();
 
         if(_visiting != null)
             _visiting.removePlayer(this);
         _visiting = null;
+
+    }
+
+    public void unloadMine() {
+
+        if(_mine != null)
+            _mine.unload();
+        _mine = null;
 
     }
 
@@ -167,6 +173,13 @@ public class VyPlayer {
         if(ply == null)
             return;
 
+        if(ply.hasPermission("vyprison.bypass.reset_position")) {
+
+            ply.sendMessage(ChatColor.RED + "You have bypassed a position reset");
+            return;
+
+        }
+
         this.setVisiting(null);
 
         ply.sendMessage(Conf.INVALID_POSITION_MSG);
@@ -192,21 +205,43 @@ public class VyPlayer {
         if(instance == null)
             return false;
 
-        int blockSize = Conf.MINE_BLOCK_SIZE * 16;
-        return instance.getIdentifier() == ElegantPair.pair(
-                Math.floorDiv(pos.getBlockX(), blockSize),
-                Math.floorDiv(pos.getBlockZ(), blockSize)
-        );
+       return instance.getRegion()
+               .isWithin(ply.getLocation());
 
     }
 
     public boolean hasCooldown(String token) {
+        return this.hasCooldown(token, true);
+    }
+
+    public boolean hasCooldown(String token, boolean msgUser) {
 
         if(!_cooldownMap.containsKey(token))
             return false;
 
-        return _cooldownMap.get(token) > System.currentTimeMillis();
+        long expireAt = _cooldownMap.get(token);
+        boolean hasCooldown = expireAt > System.currentTimeMillis();
 
+        if(hasCooldown && msgUser) {
+
+            Player ply = this.getPlayer();
+            if(ply != null) {
+
+                ply.sendMessage(Conf.COOLDOWN_MESSAGE
+                        .replaceAll("%action%", token)
+                        .replaceAll("%time%", TFormatter.formatMs(expireAt - System.currentTimeMillis()))
+                );
+
+            }
+
+        }
+
+        return hasCooldown;
+
+    }
+
+    public long getCooldown(String token) {
+        return _cooldownMap.get(token) - System.currentTimeMillis();
     }
 
     public boolean cooldown(String token, long duration) {
@@ -224,9 +259,10 @@ public class VyPlayer {
             Player ply = this.getPlayer();
             if(ply != null) {
 
-                ply.sendMessage(ChatColor.GRAY + "You can not " + ChatColor.LIGHT_PURPLE + token
-                        + ChatColor.GRAY + "for another " + ChatColor.LIGHT_PURPLE +
-                        TFormatter.formatMs(expireAt - System.currentTimeMillis()));
+                ply.sendMessage(Conf.COOLDOWN_MESSAGE
+                        .replaceAll("%action%", token)
+                        .replaceAll("%time%", TFormatter.formatMs(expireAt - System.currentTimeMillis()))
+                );
 
             }
 

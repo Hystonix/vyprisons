@@ -8,7 +8,6 @@ import com.glitchedturtle.vyprisons.player.mine.PlayerMineInstance;
 import com.glitchedturtle.vyprisons.schematic.SchematicType;
 import com.glitchedturtle.vyprisons.schematic.placer.SchematicWorker;
 import com.glitchedturtle.vyprisons.schematic.placer.SchematicWorkerManager;
-import com.glitchedturtle.vyprisons.util.DebugFlag;
 import com.glitchedturtle.vyprisons.util.ElegantPair;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -78,10 +77,7 @@ public class SchematicInstance {
         mid.add(Conf.MINE_ORIGIN.toVector());
         SafeLocation midPoint = new SafeLocation(mid);
 
-        boolean burst = SchematicInstance.isBurstMode();
-        int blocksPerTick = burst ? Conf.MINE_WORKER_BURST_BLOCKS_PER_TICK : Conf.MINE_WORKER_BLOCKS_PER_TICK;
-
-        _placeJob = new SchematicWorker.PlaceJob(midPoint, _type, blocksPerTick, completableFuture);
+        _placeJob = new SchematicWorker.PlaceJob(midPoint, _type, Conf.MINE_WORKER_BLOCKS_PER_TICK, Conf.MINE_WORKER_PLACES_PER_TICK, completableFuture);
         _origin = midPoint;
 
         try {
@@ -160,13 +156,8 @@ public class SchematicInstance {
         return _type.getMineOffset().addOffset(Conf.MINE_WORLD.getWorld(), _origin);
     }
 
-    private static boolean isBurstMode() {
-
-        if(DebugFlag.WORKER_BURST_MODE)
-            return true;
-
-        return false;
-
+    public Region getRegion() {
+        return _type.getRegionOffset().addOffset(Conf.MINE_WORLD.getWorld(), _origin);
     }
 
 }

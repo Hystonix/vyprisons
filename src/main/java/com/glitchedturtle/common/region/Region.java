@@ -1,6 +1,7 @@
 package com.glitchedturtle.common.region;
 
 import com.glitchedturtle.common.util.SafeLocation;
+import com.glitchedturtle.common.util.StringParser;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -95,6 +96,11 @@ public class Region {
         Vector dim = this.getDimensions();
         return (dim.getBlockX() + 1) * (dim.getBlockY() + 1) * (dim.getBlockZ() + 1);
 
+    }
+
+    @Override
+    public String toString() {
+        return StringParser.locationToString(_min) + " -> " + StringParser.locationToString(_max);
     }
 
 }

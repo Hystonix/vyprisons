@@ -11,6 +11,9 @@ description:
   - This is the description for the mine
   - it is pretty epic
 
+#permission: vyprison.mine.example_mine
+#tagline: "An awesome mine!"
+
 # The icon used in menus, needs to be a spigot Material enum,
 # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 icon: GRASS

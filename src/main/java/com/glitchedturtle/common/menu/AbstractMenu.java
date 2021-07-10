@@ -2,6 +2,7 @@ package com.glitchedturtle.common.menu;
 
 import com.glitchedturtle.common.util.TAssert;
 import com.glitchedturtle.vyprisons.VyPrisonPlugin;
+import com.glitchedturtle.vyprisons.player.VyPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

@@ -7,6 +7,7 @@ import com.glitchedturtle.vyprisons.player.VyPlayerManager;
 import com.glitchedturtle.vyprisons.player.mine.action.CreateMineInstanceAction;
 import com.glitchedturtle.vyprisons.player.mine.action.FetchMineInstanceAction;
 import com.glitchedturtle.vyprisons.player.mine.listener.MineManipulationHandler;
+import com.glitchedturtle.vyprisons.player.mine.listener.PlayerMoveHandler;
 import com.glitchedturtle.vyprisons.player.mine.listener.PlayerPositionHandler;
 import com.glitchedturtle.vyprisons.player.mine.listener.SellAllHandler;
 import com.glitchedturtle.vyprisons.player.mine.reset.MineResetManager;
@@ -30,6 +31,7 @@ public class PlayerMineManager {
     private MineManipulationHandler _mineManipulationHandler;
     private PlayerPositionHandler _minePositionHandler;
     private SellAllHandler _sellAllHandler;
+    private PlayerMoveHandler _moveHandler;
 
     public PlayerMineManager(VyPrisonPlugin plugin, VyPlayerManager playerManager) {
 
@@ -43,11 +45,13 @@ public class PlayerMineManager {
         _mineManipulationHandler = new MineManipulationHandler(playerManager);
         _minePositionHandler = new PlayerPositionHandler(_schematicManager, playerManager);
         _sellAllHandler = new SellAllHandler(playerManager);
+        _moveHandler = new PlayerMoveHandler(playerManager);
 
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(_mineManipulationHandler, plugin);
         pm.registerEvents(_minePositionHandler, plugin);
         pm.registerEvents(_sellAllHandler, plugin);
+        pm.registerEvents(_moveHandler, plugin);
 
     }
 

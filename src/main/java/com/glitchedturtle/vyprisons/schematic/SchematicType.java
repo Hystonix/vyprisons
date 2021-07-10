@@ -30,8 +30,18 @@ public class SchematicType {
 
     private Vector _spawnOffset;
     private Region _mineOffset;
+    private Region _region;
 
-    SchematicType(int id, File schematicFile, String name, List<String> description, Material icon, Vector spawnOffset, Region mineOffset) {
+    private String _permissionNode = null;
+
+    SchematicType(int id,
+                  File schematicFile,
+                  String name,
+                  List<String> description,
+                  Material icon,
+                  Vector spawnOffset,
+                  Region mineOffset,
+                  Region region) {
 
         _id = id;
         _schematicFile = schematicFile;
@@ -40,6 +50,7 @@ public class SchematicType {
         _icon = icon;
         _spawnOffset = spawnOffset;
         _mineOffset = mineOffset;
+        _region = region;
 
     }
 
@@ -75,6 +86,10 @@ public class SchematicType {
 
     }
 
+    void setPermissionNode(String permissionNode) {
+        _permissionNode = permissionNode;
+    }
+
     public String getName() {
         return _name;
     }
@@ -95,8 +110,17 @@ public class SchematicType {
         return _mineOffset;
     }
 
+    public Region getRegionOffset() {
+        return _region;
+    }
+
     public boolean canAccess(Player ply) {
+
+        if(_permissionNode != null)
+            return ply.hasPermission(_permissionNode);
+
         return true;
+
     }
 
 }

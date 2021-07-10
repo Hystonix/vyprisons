@@ -1,6 +1,7 @@
 package com.glitchedturtle.vyprisons.command.impl.mine.manage.ui.page;
 
 import com.glitchedturtle.common.menu.AbstractMenuPage;
+import com.glitchedturtle.common.menu.impl.ConfirmPage;
 import com.glitchedturtle.common.util.ItemBuilder;
 import com.glitchedturtle.vyprisons.command.impl.mine.manage.ui.MineManageMenu;
 import com.glitchedturtle.vyprisons.configuration.Conf;
@@ -8,6 +9,7 @@ import com.glitchedturtle.vyprisons.player.VyPlayer;
 import com.glitchedturtle.vyprisons.player.mine.PlayerMineInstance;
 import com.glitchedturtle.vyprisons.schematic.SchematicManager;
 import com.glitchedturtle.vyprisons.schematic.SchematicType;
+import com.glitchedturtle.vyprisons.util.TFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -16,10 +18,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MineStylePage extends AbstractMenuPage<MineManageMenu> {
@@ -27,14 +26,14 @@ public class MineStylePage extends AbstractMenuPage<MineManageMenu> {
     private Map<Integer, SchematicType> _typeMap = new HashMap<>();
 
     public MineStylePage(MineManageMenu menu) {
-        super(menu, ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "VyPrison > " + ChatColor.RESET + "Style", 54);
+        super(menu, Conf.UI_ELEM_STYLE_PAGE_NAME, 54);
     }
 
     @Override
     public void populatePage(Inventory inv) {
 
         inv.setItem(0, ItemBuilder.create(Material.BLUE_BED)
-                .displayName(ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + "... Go back")
+                .displayName(Conf.UI_ELEM_GO_BACK_NAME)
                 .build()
         );
 
@@ -49,6 +48,8 @@ public class MineStylePage extends AbstractMenuPage<MineManageMenu> {
                 this.getMenu().getPlugin().getSchematicManager();
         PlayerMineInstance instance = this.getMenu().getMineInstance();
 
+        VyPlayer vyPlayer = this.getMenu().getVyPlayer();
+
         _typeMap.clear();
 
         int slot = 10;
@@ -62,6 +63,9 @@ public class MineStylePage extends AbstractMenuPage<MineManageMenu> {
 
             if(type == instance.getType()) {
                 lore.add(ChatColor.GRAY + "This style is currently equipped");
+            } else if(vyPlayer.hasCooldown("Update style", false)) {
+                lore.add(ChatColor.GRAY + "On cooldown for "
+                        + ChatColor.LIGHT_PURPLE + TFormatter.formatMs(vyPlayer.getCooldown("Update privacy")));
             } else if(type.canAccess(this.getMenu().getPlayer())) {
                 lore.add(ChatColor.GREEN + "Click to select this style");
             } else {
@@ -104,7 +108,7 @@ public class MineStylePage extends AbstractMenuPage<MineManageMenu> {
         }
 
         VyPlayer vyPlayer = this.getMenu().getVyPlayer();
-        if(vyPlayer.cooldown("Update style", Conf.MINE_STYLE_UPDATE_COOLDOWN))
+        if(vyPlayer.hasCooldown("Update style"))
             return;
 
         SchematicType type = _typeMap.get(ev.getSlot());
@@ -123,13 +127,35 @@ public class MineStylePage extends AbstractMenuPage<MineManageMenu> {
 
         ply.playSound(ply.getEyeLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
 
-        PlayerMineInstance instance = this.getMenu().getMineInstance();
-        instance.setType(type).whenComplete((v, ex) -> {
+        menu.openPage(new ConfirmPage<>(menu, "Change style to " + type.getName() + "?",
+                Arrays.asList("Are you sure you want to change your mine's style?",
+                            "This will reset the mine and teleport all",
+                            "visitors to a new mine"
+                        ),
+                    false,
+                (confirm) -> {
 
-            this.updatePage(ev.getInventory());
-            ply.playSound(ply.getEyeLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                    if(!confirm) {
 
-        });
+                        menu.openPage(this);
+                        return;
+
+                    }
+
+                    if(vyPlayer.cooldown("Update style",  Conf.MINE_STYLE_UPDATE_COOLDOWN))
+                        return;
+
+                    ply.closeInventory();
+
+                    PlayerMineInstance instance = this.getMenu().getMineInstance();
+                    instance.setType(type).whenComplete((v, ex) -> {
+                        ply.playSound(ply.getEyeLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                    });
+
+
+                }
+        ));
+
 
     }
 

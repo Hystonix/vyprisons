@@ -5,9 +5,7 @@ import com.glitchedturtle.vyprisons.command.abs.VySubCommand;
 import com.glitchedturtle.vyprisons.command.abs.VySubConsoleCommand;
 import com.glitchedturtle.vyprisons.command.abs.VySubPlayerCommand;
 import com.glitchedturtle.vyprisons.command.impl.amanage.VyAdminManageCommand;
-import com.glitchedturtle.vyprisons.command.impl.mine.VyCreateCommand;
-import com.glitchedturtle.vyprisons.command.impl.mine.VyLotteryCommand;
-import com.glitchedturtle.vyprisons.command.impl.mine.VyTeleportCommand;
+import com.glitchedturtle.vyprisons.command.impl.mine.*;
 import com.glitchedturtle.vyprisons.command.impl.mine.manage.VyManageCommand;
 import com.glitchedturtle.vyprisons.command.impl.mine.manage.VyPrivacyCommand;
 import com.glitchedturtle.vyprisons.command.impl.mine.manage.VyStyleCommand;
@@ -48,6 +46,15 @@ public class VyPrisonCommand implements CommandExecutor, TabCompleter {
         this.registerCommand(new VyPrivacyCommand(pluginInstance.getMenuManager()));
         this.registerCommand(new VyStyleCommand(pluginInstance.getMenuManager()));
         this.registerCommand(new VyTierCommand(pluginInstance.getMenuManager()));
+
+        this.registerCommand(new VyTaxCommand());
+
+        this.registerCommand(new VyUnloadCommand(pluginInstance.getPlayerManager()));
+        this.registerCommand(new VyResetCommand(
+                pluginInstance.getMenuManager(),
+                pluginInstance.getDatabaseConnector(),
+                pluginInstance.getPlayerManager()
+        ));
 
     }
 
@@ -101,14 +108,14 @@ public class VyPrisonCommand implements CommandExecutor, TabCompleter {
 
     public void printCommandList(CommandSender sender) {
 
-        sender.sendMessage(ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD.toString() + "VyPrisons Commands");
+        sender.sendMessage(ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "VyPrisons Commands");
         for(VySubCommand cmd : _commandMap.values()) {
 
             if(!sender.hasPermission(cmd.getPermissionNode()))
                 return;
 
             sender.sendMessage(
-                    ChatColor.LIGHT_PURPLE + "/" + cmd.getName() + " " + cmd.getUsage()
+                    ChatColor.LIGHT_PURPLE + "/vyp " + cmd.getName() + " " + cmd.getUsage()
                     + ChatColor.GRAY + " " + cmd.getDescription()
             );
 

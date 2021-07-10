@@ -3,7 +3,6 @@ package com.glitchedturtle.vyprisons.command.impl.mine.manage;
 import com.glitchedturtle.common.menu.MenuManager;
 import com.glitchedturtle.vyprisons.command.abs.VySubPlayerCommand;
 import com.glitchedturtle.vyprisons.command.impl.mine.manage.ui.MineManageMenu;
-import com.glitchedturtle.vyprisons.command.impl.mine.manage.ui.page.MinePrivacyPage;
 import com.glitchedturtle.vyprisons.command.impl.mine.manage.ui.page.MineTierPage;
 import com.glitchedturtle.vyprisons.configuration.Conf;
 import com.glitchedturtle.vyprisons.player.VyPlayer;
@@ -49,7 +48,7 @@ public class VyTierCommand extends VySubPlayerCommand {
 
             ex.printStackTrace();
 
-            ply.sendMessage(Conf.CMD_MANAGE_MINE_FETCH_FAILED);
+            ply.sendMessage(Conf.CMD_MANAGE_FETCH_FAILED);
             return null;
 
         });

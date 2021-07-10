@@ -14,7 +14,6 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.util.Vector;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.concurrent.CompletableFuture;
 
 public class SchematicWorker implements Runnable {
@@ -24,13 +23,14 @@ public class SchematicWorker implements Runnable {
         NONE,
         ENQUEUED,
         IN_PROGRESS,
-        DONE;
+        DONE
 
     }
 
     public static class PlaceJob {
 
         private int _blocksPerTick;
+        private int _placesPerTick;
 
         private SafeLocation _pastePoint;
         private Vector _origin;
@@ -43,11 +43,12 @@ public class SchematicWorker implements Runnable {
         private Clipboard _schematicData;
         private CompletableFuture<Void> _completeFuture;
 
-        public PlaceJob(SafeLocation pastePoint, SchematicType type, int blocksPerTick, CompletableFuture<Void> completeFuture) {
+        public PlaceJob(SafeLocation pastePoint, SchematicType type, int blocksPerTick, int placesPerTick, CompletableFuture<Void> completeFuture) {
 
             _pastePoint = pastePoint;
             _type = type;
             _blocksPerTick = blocksPerTick;
+            _placesPerTick = placesPerTick;
             _completeFuture = completeFuture;
 
         }
@@ -123,7 +124,7 @@ public class SchematicWorker implements Runnable {
         }
 
         public long getEta() {
-            return this.getBlocksLeft() / (_blocksPerTick * 20);
+            return this.getBlocksLeft() / (_blocksPerTick * 20L);
         }
 
     }
@@ -170,9 +171,15 @@ public class SchematicWorker implements Runnable {
 
         }
 
-        for(int i = 0; i < _currentJob._blocksPerTick; i++) {
+        int placeCounter = 0;
+        for(int i = 0; i < _currentJob._blocksPerTick
+                && placeCounter < _currentJob._placesPerTick; i++) {
 
-            if(this.doPlace()) {
+            PlaceResponse res = this.doPlace();
+            if(res == PlaceResponse.PLACE)
+                placeCounter++;
+
+            if(res == PlaceResponse.DONE) {
 
                 _currentJob.completeJob();
                 _currentJob = null;
@@ -184,7 +191,11 @@ public class SchematicWorker implements Runnable {
 
     }
 
-    private boolean doPlace() {
+    private enum PlaceResponse {
+        NONE, PLACE, DONE;
+    }
+
+    private PlaceResponse doPlace() {
 
         PlaceJob job = _currentJob;
 
@@ -196,6 +207,7 @@ public class SchematicWorker implements Runnable {
         );
 
         BaseBlock block = schematic.getFullBlock(pos);
+        PlaceResponse res = PlaceResponse.NONE;
 
         if(block != null
                 && block.getBlockType() != BlockTypes.AIR) {
@@ -209,9 +221,11 @@ public class SchematicWorker implements Runnable {
             realBlock.setType(data.getMaterial());
             realBlock.setBlockData(data);
 
+            res = PlaceResponse.PLACE;
+
         }
 
-        return _currentJob.incrementCursor();
+        return _currentJob.incrementCursor() ? PlaceResponse.DONE : res;
 
     }
 

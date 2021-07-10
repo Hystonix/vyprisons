@@ -38,6 +38,13 @@ public class VyPrisonPlugin extends JavaPlugin {
 
     }
 
+    @Override
+    public void onDisable() {
+
+        _playerManager.unload();
+
+    }
+
     private void initializePlugin() throws PluginStartException {
 
         try {

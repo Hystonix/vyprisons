@@ -4,6 +4,9 @@ api-version: 1.16
 main: com.glitchedturtle.vyprisons.VyPrisonPlugin
 depend:
   - WorldEdit
+softdepend:
+  - AutoSell
 commands:
   vyprison:
     description: "VyPrison main command"
+    aliases: [ "vyp" ]

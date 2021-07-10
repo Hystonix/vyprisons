@@ -3,6 +3,7 @@ package com.glitchedturtle.vyprisons.player;
 import com.glitchedturtle.vyprisons.PluginStartException;
 import com.glitchedturtle.vyprisons.VyPrisonPlugin;
 import com.glitchedturtle.vyprisons.data.DatabaseConnector;
+import com.glitchedturtle.vyprisons.player.mine.PlayerMineInstance;
 import com.glitchedturtle.vyprisons.player.mine.PlayerMineManager;
 import com.google.common.cache.*;
 import org.bukkit.configuration.ConfigurationSection;
@@ -63,6 +64,22 @@ public class VyPlayerManager {
 
     public VyPlayer getCachedPlayer(UUID uniqueId) {
         return _playerCache.getIfPresent(uniqueId);
+    }
+
+    public void unload() {
+
+        for(VyPlayer vyPlayer : _playerCache.asMap().values()) {
+
+            PlayerMineInstance instance = vyPlayer.getCachedMine();
+            if(instance == null)
+                continue;
+
+            instance.unload();
+
+        }
+
+        _playerCache.invalidateAll();
+
     }
 
 }

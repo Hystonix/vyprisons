@@ -25,14 +25,14 @@ import java.util.concurrent.CompletableFuture;
 public class MineTierPage extends AbstractMenuPage<MineManageMenu> {
 
     public MineTierPage(MineManageMenu menu) {
-        super(menu, ChatColor.LIGHT_PURPLE.toString() + ChatColor.BOLD + "VyPrison > " + ChatColor.RESET + "Tier", 27);
+        super(menu, Conf.UI_ELEM_TIER_PAGE_NAME, 27);
     }
 
     @Override
     public void populatePage(Inventory inv) {
 
         inv.setItem(0, ItemBuilder.create(Material.BLUE_BED)
-                .displayName(ChatColor.DARK_GRAY.toString() + ChatColor.BOLD + "... Go back")
+                .displayName(Conf.UI_ELEM_GO_BACK_NAME)
                 .build()
         );
 

@@ -3,6 +3,7 @@ package com.glitchedturtle.vyprisons.player.mine.listener;
 import com.glitchedturtle.vyprisons.configuration.Conf;
 import com.glitchedturtle.vyprisons.player.VyPlayer;
 import com.glitchedturtle.vyprisons.player.VyPlayerManager;
+import com.glitchedturtle.vyprisons.player.mine.PlayerMineInstance;
 import com.glitchedturtle.vyprisons.schematic.SchematicManager;
 import com.glitchedturtle.vyprisons.schematic.pool.SchematicInstance;
 import com.glitchedturtle.vyprisons.util.ElegantPair;
@@ -13,8 +14,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-
-import java.util.Arrays;
 
 public class PlayerPositionHandler implements Listener {
 
@@ -43,11 +42,13 @@ public class PlayerPositionHandler implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
 
         Player ply = event.getPlayer();
+
         VyPlayer vyPlayer = _playerManager.getCachedPlayer(ply.getUniqueId());
         if(vyPlayer == null)
             return;
 
         vyPlayer.setVisiting(null);
+        vyPlayer.unloadMine();
 
     }
 
@@ -78,13 +79,6 @@ public class PlayerPositionHandler implements Listener {
                 Math.floorDiv(to.getBlockZ(), blockSize)
         );
 
-        System.out.println("Teleporting to " + id + " " + Arrays.toString(
-            new int[] {
-                    Math.floorDiv(to.getBlockX(), blockSize),
-                    Math.floorDiv(to.getBlockZ(), blockSize)
-            }
-        ));
-
         SchematicInstance instance = _schematicManager.getById(id);
         if(instance == null
                 || !instance.isReserved()) {
@@ -96,7 +90,18 @@ public class PlayerPositionHandler implements Listener {
 
         }
 
-        vyPlayer.setVisiting(instance.getReservedBy());
+        PlayerMineInstance reservedBy = instance.getReservedBy();
+
+        if(!reservedBy.isPermitted(vyPlayer)) {
+
+            ev.setCancelled(true);
+            ply.sendMessage(Conf.INVALID_POSITION_PRIVACY_MSG);
+
+            return;
+
+        }
+
+        vyPlayer.setVisiting(reservedBy);
 
     }
 

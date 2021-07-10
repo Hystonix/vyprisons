@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -60,8 +61,13 @@ public class ItemBuilder {
     }
 
     public ItemBuilder lore(List<String> lore) {
-        _lore = lore;
+
+        if(_lore == null)
+            _lore = new ArrayList<>();
+
+        _lore.addAll(lore);
         return this;
+
     }
 
     public ItemBuilder lore(String... lore) {

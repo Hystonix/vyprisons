@@ -20,11 +20,8 @@ minepool:
 
     # Every tick, the worker places a number of blocks
     # This is how many blocks each worker places in a tick
-    blocks_per_tick: 16
-
-    # Under certain circumstances, the server can operate under burst blocks per tick,
-    # where it is critical that a mine gets placed quickly
-    burst_blocks_per_tick: 1248
+    blocks_per_tick: 1024
+    place_per_tick: 256
 
 mine:
   default_tp_world_name: world
@@ -33,6 +30,147 @@ mine:
   reset:
     blocks_per_tick: 1024
     max_workers: 2
+
+    reset_msg: "&6The mine is resetting!"
+    reset_delay: 10
+
+    reset_threshold: 0.99
+
+  lottery:
+    max_value: 15000
+    min_value: 10
+    min_entries: 2
+
+  tax:
+    min_value: 0
+    max_value: 0.3
+    lottery_mult: 0.10
+    to_owner_mult: 0.40
+
+  invalid_position_msg: "&cOops... You aren't supposed to be here!"
+  invalid_position_privacy_msg: "&cYikes! You don't have permission to be here!"
+  invalid_position_sound: BLOCK_BEACON_ACTIVATE
+
+  invalid_block_break_msg: "&cYou can't place or break this block!"
+  invalid_block_break_msg_send_to_chat: true
+  invalid_block_break_msg_send_to_action: true
+  invalid_block_break_sound: ENTITY_ITEM_BREAK
+
+mine_message:
+  access_level_public: "&6The mine's access level has set to public"
+  access_level_gang: "&6The mine's access level has set to gang-only"
+  access_level_private: "&6The mine's access level has set to private"
+  access_update_displaced: "&cHence, you have been removed from the mine"
+
+  tier_upgrade: "&7The mine has leveled up to &b&lTIER %tier%!"
+
+  lottery_entry: "&7%name% has joined the mine's lottery"
+  lottery_winners: "&7The wheel has spun! &e%winners%&7 have each won &e$%prize%"
+  lottery_winner_msg: "&6You have won $%prize% from %name%'s lottery!"
+
+  mine_enter: "&7Welcome to &e%name%'s&7 mine! Current tax rate: &e%tax_rate"
+
+cmd_message:
+  missing_permission: "&cYou lack the required permissions to execute this command"
+  failed_profile_fetch: "&cFailed to fetch your prison profile. Please try again shortly."
+
+  teleport_target_not_found: "&cFailed to find the player '%name%', are they online?"
+  teleport_no_mine: "&cYou do not have a mine to teleport to! To create a mine, type /vyprison create"
+  teleport_no_mine_other: "&c%name% do not have a mine to teleport to!"
+  teleport_target_failed_fetch: "&cFailed to load the mine, please try again later."
+  teleport_place_in_progress: "&cPlease wait while your mine is placed in the world"
+  teleport_privacy: "&cYou can not access this mine at this time"
+  teleport_success: "&aYou have teleported to your mine!"
+  teleport_success_other: "&aYou have teleported to %name%'s mine!"
+  teleport_success_sound: ENTITY_ENDERMAN_TELEPORT
+
+  create_failed: "&cAn error occurred during the creation of your mine, please try again later"
+  create_already_owner: "&cYou can not create another mine!"
+  create_success: "&aCreated mine!"
+  create_success_sound: ENTITY_PLAYER_LEVELUP
+
+  manage_no_mine: "&cYou do not have a mine to manage! To create a mine, type /vyprison create"
+  manage_fetch_failed: "&cAn error occurred while loading your mine, please try again later"
+
+  tier_update_failed: "&cSomething went wrong while upgrading your tier"
+  tier_insufficient_balance: "&cYou do not have sufficient balance to purchase this tier"
+
+  lottery_not_visiting: "&cYou are not currently visiting a mine"
+  lottery_not_owner: "&cYou are not the owner of this mine"
+  lottery_disabled: "&cThis mine's lottery is currently disabled"
+  lottery_already_entered: "&cYou are already a member of this mine's lottery"
+  lottery_joined: "&aYou have joined the lottery"
+  lottery_min_entries: "&cThe lottery can only be rolled after 2 people have joined"
+  lottery_min_value: "&cThe lottery can only be rolled after it's worth has reached at least $10"
+  lottery_info: "&7The lottery is currently worth &e$%value%&7 and has &e%entry_count% participants"
+
+  unload_not_found: "&cThe mine of this player is not currently loaded"
+  unload_target_not_exist: "&cFailed to find player under name '%name%'"
+  unload_success: "&aThe mine has been unloaded"
+
+  privacy_invalid_setting: "&cInvalid option! Available: Public, gang, private"
+  privacy_success: "&aMine privacy set to %privacy%"
+  privacy_insufficient_permission: "&cYou lack the required permission to change your mine to %privacy_level%"
+
+  reset_target_not_found: "&cFailed to find player under name '%name%'"
+  reset_success: "&aThe mine has been reset"
+
+  tax_not_visiting: "&cYou are not currently visiting a mine"
+  tax_info: "&7The current tax level of &e%name%'s&7 mine is &e%tax%"
+  tax_error_fetch: "&cAn error occurred while loading the mine"
+  tax_not_owned: "&cYou do not own a mine"
+  tax_input_invalid: "&c'%input%' is not a valid tax level!"
+  tax_update_success: "&aUpdated your mine's tax level to %tax_level%"
+
+ui_elem:
+  confirm_btn_name: "&a&lCONFIRM"
+  cancel_btn_name: "&c&lCANCEL"
+
+  root_page_name: "&d&lVyPrison > &rManage your mine"
+  lottery_page_name: "&d&lVyPrison > &rLottery"
+  privacy_page_name: "&d&lVyPrison > &rPrivacy setting"
+  style_page_name: "&d&lVyPrison > &rStyle"
+  tier_page_name: "&d&lVyPrison > &rTier"
+
+  go_back_name: "&8... Go back"
+
+  teleport_btn_name: "&dTeleport to mine"
+
+  tier_btn_name: "&6&lMine Tiers"
+  tier_btn_description:
+    - ""
+    - "&7Upgrade your mine's tier"
+    - "&7to increase the rate in which valuable blocks spawn!"
+
+  privacy_btn_name: "&9Mine Privacy"
+  privacy_btn_description:
+    - ""
+    - "&7Configure the access setting for your mine"
+    - "&7to set which player's can visit"
+
+  lottery_btn_name: "&a&lMine Lottery"
+  lottery_btn_description:
+    - ""
+    - "&7View and manage the mine's lottery"
+
+  privacy_tag_permission: "&cThis setting is locked"
+  privacy_tag_current_setting: "&6This is the current setting"
+  privacy_tag_cooldown_prefix: "&7On cooldown for &d"
+  privacy_tag_call_to_action: "&aLeft-click to switch to this setting"
+
+  privacy_update_confirm_title: "&cChange access level to "
+  privavy_update_confirm_description:
+    - "&7Are you sure you want to do this?"
+    - "&7Changing to a stricter access level may evict visitors from your mine"
+
+cooldown_message: "&6You can not &d%action%&6 for another &d%time%"
+
+cooldown:
+  execute_command: 1000
+  style_update: 900000
+  access_update: 60000
+  lottery_join: 60000
+  lottery_roll: 15000
 
 tiers:
   1:

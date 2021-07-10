@@ -123,8 +123,6 @@ public class SchematicPool {
 
     private CompletableFuture<Void> createPlaceCompleteFuture(SchematicInstance instance) {
 
-        // TODO: Clean this up
-
         CompletableFuture<Void> completeFuture = new CompletableFuture<>();
         completeFuture.thenAccept((v) -> {
 

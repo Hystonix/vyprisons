@@ -3,6 +3,7 @@ package com.glitchedturtle.common.menu.impl;
 import com.glitchedturtle.common.menu.AbstractMenu;
 import com.glitchedturtle.common.menu.AbstractMenuPage;
 import com.glitchedturtle.common.util.ItemBuilder;
+import com.glitchedturtle.vyprisons.configuration.Conf;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -47,19 +48,19 @@ public class ConfirmPage<I extends AbstractMenu<?>> extends AbstractMenuPage<I> 
         );
 
         ItemStack confirmStack = ItemBuilder.create(Material.LIME_STAINED_GLASS_PANE)
-                .displayName(ChatColor.GREEN + ChatColor.BOLD.toString() + "CONFIRM" )
+                .displayName(Conf.UI_ELEM_CONFIRM_BTN)
                 .lore(_description).build();
         for(int slot = 19; slot <= 39; slot++) {
 
             inv.setItem(slot, confirmStack);
 
-            if((slot - 2) % 9 == 0)
+            if((slot - 3) % 9 == 0)
                 slot += 6;
 
         }
 
         ItemStack cancelStack = ItemBuilder.create(Material.RED_STAINED_GLASS_PANE)
-                .displayName(ChatColor.RED + ChatColor.BOLD.toString() + "CANCEL" )
+                .displayName(Conf.UI_ELEM_CANCEL_BTN)
                 .lore(_description).build();
 
         for(int slot = 23; slot <= 43; slot++) {
@@ -90,13 +91,21 @@ public class ConfirmPage<I extends AbstractMenu<?>> extends AbstractMenuPage<I> 
         boolean accept = clicked.getType() == Material.LIME_STAINED_GLASS_PANE;
 
         ply.playSound(ply.getEyeLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
-        _callback.accept(accept);
+
+        Consumer<Boolean> callback = _callback;
+        _callback = null;
+
+        callback.accept(accept);
 
     }
 
     @Override
     public void handleClose() {
+
+        if(_callback == null)
+            return;
         _callback.accept(_defaultResponse);
+
     }
 
 }

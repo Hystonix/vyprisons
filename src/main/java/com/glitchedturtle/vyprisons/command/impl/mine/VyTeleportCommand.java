@@ -5,9 +5,7 @@ import com.glitchedturtle.vyprisons.configuration.Conf;
 import com.glitchedturtle.vyprisons.player.VyPlayer;
 import com.glitchedturtle.vyprisons.player.VyPlayerManager;
 import com.glitchedturtle.vyprisons.player.mine.PlayerMineInstance;
-import com.glitchedturtle.vyprisons.schematic.pool.SchematicInstance;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.concurrent.CompletableFuture;
@@ -50,8 +48,18 @@ public class VyTeleportCommand extends VySubPlayerCommand {
 
             if(mine == null) {
 
-                ply.sendMessage(other ? Conf.CMD_TELEPORT_NO_MINE_OTHER : Conf.CMD_TELEPORT_NO_MINE);
+                String msg = Conf.CMD_TELEPORT_NO_MINE;
+                if(other)
+                    msg = Conf.CMD_TELEPORT_NO_MINE_OTHER.replaceAll("%name%", args[0]);
+
+                ply.sendMessage(msg);
                 return;
+
+            }
+
+            if(!mine.isPermitted(vyPlayer)) {
+
+                ply.sendMessage(Conf.CMD_TELEPORT_PRIVACY);
 
             }
 

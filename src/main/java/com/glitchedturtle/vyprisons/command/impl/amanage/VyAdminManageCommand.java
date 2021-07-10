@@ -25,7 +25,7 @@ public class VyAdminManageCommand extends VySubPlayerCommand {
         MenuManager menuManager = _pluginInstance.getMenuManager();
         Player ply = player.getPlayer();
 
-        AdminManageMenu manageMenu = new AdminManageMenu(_pluginInstance);
+        AdminManageMenu manageMenu = new AdminManageMenu(_pluginInstance, player);
         menuManager.openMenu(ply, manageMenu);
 
     }
