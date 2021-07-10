@@ -69,7 +69,7 @@ public class SchematicPool {
         if(_availableInstances.size() > 0) {
 
             instance = _availableInstances.getFirst();
-            if(allowUnready && instance.getState() != SchematicInstance.InstanceState.READY)
+            if(!allowUnready && instance.getState() != SchematicInstance.InstanceState.READY)
                 return null;
 
         } else

@@ -196,6 +196,8 @@ public class Conf {
     @ConfKey("cmd_message.create_success")
     public static String CMD_CREATE_SUCCESS
             = ChatColor.GREEN + "Created mine";
+    @ConfKey("cmd_message.create_place_in_progress")
+    public static String CMD_CREATE_PLACE_IN_PROGRESS;
     @ConfKey("cmd_message.create_success_sound")
     public static Sound CMD_CREATE_SUCCESS_SOUND
             = Sound.ENTITY_PLAYER_LEVELUP;
@@ -286,9 +288,9 @@ public class Conf {
     public static String CMD_TAX_UPDATE_SUCCESS
             = ChatColor.GREEN + "Updated your mine's tax level to %tax_level%";
 
-    @ConfKey("ui_elem.confirm_btn")
+    @ConfKey("ui_elem.confirm_btn_name")
     public static String UI_ELEM_CONFIRM_BTN;
-    @ConfKey("ui_elem.cancel_btn")
+    @ConfKey("ui_elem.cancel_btn_name")
     public static String UI_ELEM_CANCEL_BTN;
 
     @ConfKey("ui_elem.root_page_name")

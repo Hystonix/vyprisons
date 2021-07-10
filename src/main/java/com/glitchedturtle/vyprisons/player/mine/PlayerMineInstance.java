@@ -129,22 +129,6 @@ public class PlayerMineInstance {
 
     }
 
-    public boolean attemptReassign() {
-
-        SchematicManager manager = _mineManager.getSchematicManager();
-        SchematicPool pool = manager.getPool(_activeSchematic);
-
-        TAssert.assertTrue(pool != null, "No pool registered for given type");
-
-        SchematicInstance potential =  pool.reserveAvailable(this, false);
-        if(potential == null)
-            return false;
-
-        _schematicInstance = potential;
-        return true;
-
-    }
-
     public void resetMine() {
 
         TAssert.assertTrue(_resetJob == null, "Reset job already queued");
@@ -341,6 +325,13 @@ public class PlayerMineInstance {
 
     public boolean isPermitted(VyPlayer ply) {
 
+        if(this.getSchematicInstance() == null)
+            return false;
+        SchematicInstance instance = this.getSchematicInstance();
+
+        if(instance.getState() != SchematicInstance.InstanceState.READY)
+            return false;
+
         boolean isPermitted = this.isPermittedInternal(ply);
         if(isPermitted)
             return true;
@@ -358,13 +349,6 @@ public class PlayerMineInstance {
     }
 
     private boolean isPermittedInternal(VyPlayer ply) {
-
-        if(this.getSchematicInstance() == null)
-            return false;
-        SchematicInstance instance = this.getSchematicInstance();
-
-        if(instance.getState() != SchematicInstance.InstanceState.READY)
-            return false;
 
         switch(_accessLevel) {
 

@@ -143,18 +143,6 @@ public class VyPlayer {
         SchematicInstance instance = mine.getSchematicInstance();
         if(instance == null)
             return;
-        if(instance.getState() != SchematicInstance.InstanceState.READY) {
-
-            if(!mine.attemptReassign()) {
-
-                ply.sendMessage(Conf.CMD_TELEPORT_PLACE_IN_PROGRESS);
-                return;
-
-            } else {
-                instance = mine.getSchematicInstance();
-            }
-
-        }
 
         Location warpPos = instance.getWarpPosition();
 

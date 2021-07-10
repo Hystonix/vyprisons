@@ -5,6 +5,7 @@ import com.glitchedturtle.vyprisons.configuration.Conf;
 import com.glitchedturtle.vyprisons.player.VyPlayer;
 import com.glitchedturtle.vyprisons.player.mine.PlayerMineInstance;
 import com.glitchedturtle.vyprisons.schematic.SchematicManager;
+import com.glitchedturtle.vyprisons.schematic.pool.SchematicInstance;
 import org.bukkit.entity.Player;
 
 import java.util.concurrent.CompletableFuture;
@@ -51,6 +52,11 @@ public class VyCreateCommand extends VySubPlayerCommand {
 
                     ply.teleport(mine.getWarpPosition());
                     mine.validateMineState();
+
+                } else {
+
+                    ply.sendMessage(Conf.CMD_CREATE_PLACE_IN_PROGRESS);
+                    return;
 
                 }
 

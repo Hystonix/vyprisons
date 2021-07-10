@@ -41,7 +41,8 @@ public class VyPrisonPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
 
-        _playerManager.unload();
+        if(_playerManager != null)
+            _playerManager.unload();
 
     }
 

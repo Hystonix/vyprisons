@@ -5,7 +5,9 @@ import com.glitchedturtle.vyprisons.configuration.Conf;
 import com.glitchedturtle.vyprisons.player.VyPlayer;
 import com.glitchedturtle.vyprisons.player.VyPlayerManager;
 import com.glitchedturtle.vyprisons.player.mine.PlayerMineInstance;
+import com.glitchedturtle.vyprisons.schematic.pool.SchematicInstance;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.concurrent.CompletableFuture;
@@ -53,6 +55,20 @@ public class VyTeleportCommand extends VySubPlayerCommand {
                     msg = Conf.CMD_TELEPORT_NO_MINE_OTHER.replaceAll("%name%", args[0]);
 
                 ply.sendMessage(msg);
+                return;
+
+            }
+
+            if(mine.getSchematicInstance() == null) {
+
+                ply.sendMessage(ChatColor.RED + "Mine assignment failed. Please contact server administrator");
+                return;
+
+            }
+
+            if(mine.getSchematicInstance().getState() != SchematicInstance.InstanceState.READY) {
+
+                ply.sendMessage(Conf.CMD_TELEPORT_PLACE_IN_PROGRESS);
                 return;
 
             }

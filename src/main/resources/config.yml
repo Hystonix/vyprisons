@@ -87,6 +87,7 @@ cmd_message:
   create_failed: "&cAn error occurred during the creation of your mine, please try again later"
   create_already_owner: "&cYou can not create another mine!"
   create_success: "&aCreated mine!"
+  create_place_in_progress: "&cDue to high demand, you have been assigned a mine that is not yet ready. \nPlease wait while the server prepares your mine."
   create_success_sound: ENTITY_PLAYER_LEVELUP
 
   manage_no_mine: "&cYou do not have a mine to manage! To create a mine, type /vyprison create"
@@ -153,13 +154,18 @@ ui_elem:
     - ""
     - "&7View and manage the mine's lottery"
 
+  style_btn_name: "&d&lMine Style"
+  style_btn_description:
+    - ""
+    - "&7Customize your mine's look!"
+
   privacy_tag_permission: "&cThis setting is locked"
   privacy_tag_current_setting: "&6This is the current setting"
   privacy_tag_cooldown_prefix: "&7On cooldown for &d"
   privacy_tag_call_to_action: "&aLeft-click to switch to this setting"
 
   privacy_update_confirm_title: "&cChange access level to "
-  privavy_update_confirm_description:
+  privacy_update_confirm_description:
     - "&7Are you sure you want to do this?"
     - "&7Changing to a stricter access level may evict visitors from your mine"
 
